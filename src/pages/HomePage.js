@@ -1,18 +1,19 @@
-// src/pages/HomePage.js
 import { useEffect, useState } from "react";
 import { Card, Container, Row, Col, Spinner } from "react-bootstrap";
 import axiosInstance from "../api/axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get("/courses")
-      .then(res => setCourses(res.data))
-      .catch(err => console.error(err))
+    axiosInstance
+      .get("/courses")
+      .then((res) => setCourses(res.data))
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -27,7 +28,7 @@ export default function HomePage() {
           </div>
         ) : (
           <Row>
-            {courses.map(course => (
+            {courses.map((course) => (
               <Col md={4} key={course.CourseID} className="mb-4">
                 <Card className="h-100">
                   {course.ImageURL && (
@@ -39,14 +40,20 @@ export default function HomePage() {
                     />
                   )}
                   <Card.Body>
-                    <Card.Title>{course.Title}</Card.Title>
+                    <Card.Title>
+                      <Link to={`/courses/${course.CourseID}`}>
+                        {course.Title}
+                      </Link>
+                    </Card.Title>
                     <Card.Text>{course.Description}</Card.Text>
                     <Card.Text>
                       <strong>Price:</strong> ${course.Price}
                     </Card.Text>
                     <Card.Text>
                       <strong>Rating:</strong>{" "}
-                      {course.AverageRating ? course.AverageRating + " / 5" : "No rating yet"}
+                      {course.AverageRating
+                        ? course.AverageRating + " / 5"
+                        : "No rating yet"}
                     </Card.Text>
                   </Card.Body>
                 </Card>

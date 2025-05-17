@@ -4,6 +4,9 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
+import CourseDetailPage from "./pages/CourseDetailPage";
+import CreateCoursePage from "./pages/CreateCoursePage";
+import UpdateCoursePage from "./pages/UpdateCoursePage";
 
 function App() {
   return (
@@ -12,6 +15,9 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/courses/:id" element={<CourseDetailPage />} />
+        <Route path="/courses/create" element={<CreateCoursePage />} />
+        <Route path="/courses/update/:id" element={<UpdateCoursePage />} />
       </Routes>
     </BrowserRouter>
   );
