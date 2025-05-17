@@ -1,5 +1,7 @@
 import AuthForm from "../components/AuthForm";
 import axiosInstance from "../api/axios";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Register() {
   const handleRegister = async (data) => {
@@ -13,14 +15,18 @@ export default function Register() {
   };
 
   return (
-    <AuthForm
-      title="Register"
-      fields={[
-        { name: "fullName", type: "text", placeholder: "Full Name" },
-        { name: "email", type: "email", placeholder: "Email" },
-        { name: "password", type: "password", placeholder: "Password" },
-      ]}
-      onSubmit={handleRegister}
-    />
+    <>
+      <Header />
+      <AuthForm
+        title="Register"
+        fields={[
+          { name: "fullName", type: "text", placeholder: "Full Name" },
+          { name: "email", type: "email", placeholder: "Email" },
+          { name: "password", type: "password", placeholder: "Password" },
+        ]}
+        onSubmit={handleRegister}
+      />
+      <Footer />
+    </>
   );
 }
