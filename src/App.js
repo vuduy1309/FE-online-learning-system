@@ -7,6 +7,8 @@ import HomePage from "./pages/HomePage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CreateCoursePage from "./pages/CreateCoursePage";
 import UpdateCoursePage from "./pages/UpdateCoursePage";
+import ListForManager from "./pages/ListForManager";
+import CartPage from "./pages/CartPage";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/courses/:id" element={<CourseDetailPage />} />
         <Route path="/courses/create" element={<CreateCoursePage />} />
         <Route path="/courses/update/:id" element={<UpdateCoursePage />} />
+        <Route path="/courses/listCourse" element={<ListForManager />} />
+        <Route path="/cart/view" element={<CartPage />} />
       </Routes>
     </BrowserRouter>
   );

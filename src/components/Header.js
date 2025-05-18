@@ -9,10 +9,14 @@ import {
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
+import { useCart } from "../context/CartContext";
+import { FaBell, FaHeart, FaShoppingCart } from "react-icons/fa";
+import { FaMessage } from "react-icons/fa6";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const [show, setShow] = useState(false);
+  const { cartItemsCount } = useCart();
   return (
     <Navbar bg="white" expand="lg" className="shadow-sm px-3 py-2">
       <Container>
@@ -30,20 +34,45 @@ export default function Header() {
 
         <Nav className="ms-auto align-items-center gap-3">
           <Nav.Link className="text-dark">About Us</Nav.Link>
-          <Nav.Link className="text-dark">Course</Nav.Link>
+          {user?.roleId === 2 ? (
+            <Nav.Link as={Link} to="/courses/listCourse" className="text-dark">
+              Manage Course
+            </Nav.Link>
+          ) : (
+            <Nav.Link as={Link} to="/courses" className="text-dark">
+              Course
+            </Nav.Link>
+          )}
+
           <Nav.Link className="text-dark">My Profile</Nav.Link>
 
-          <i className="bi bi-heart"></i>
-          <i className="bi bi-cart"></i>
-          <i className="bi bi-bell"></i>
+          <FaHeart ></FaHeart>
+          <Link to="/cart/view" className="position-relative">
+            <FaShoppingCart color="black" />
+            {cartItemsCount > 0 && (
+              <span
+                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark"
+                style={{
+                  fontSize: "0.55rem",
+                  padding: "2px 4px",
+                  minWidth: "16px",
+                  height: "16px",
+                  lineHeight: "12px",
+                }}
+              >
+                {cartItemsCount}
+              </span>
+            )}
+          </Link>
+          <FaBell></FaBell>
           <div className="position-relative" style={{ fontSize: "0.85rem" }}>
-            <i className="bi bi-chat-dots" style={{ fontSize: "1rem" }}></i>
+            <FaMessage></FaMessage>
             <span
               className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark"
               style={{
                 fontSize: "0.55rem",
-                padding: "2px 4px", 
-                minWidth: "16px", 
+                padding: "2px 4px",
+                minWidth: "16px",
                 height: "16px",
                 lineHeight: "12px",
               }}
