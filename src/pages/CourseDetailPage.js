@@ -13,6 +13,7 @@ import {
 import axiosInstance from "../api/axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Image from "../components/Image";
 
 export default function CourseDetailPage() {
   const { id } = useParams();
@@ -114,26 +115,33 @@ export default function CourseDetailPage() {
           </div>
         ) : course ? (
           <>
-            {/* Course Header */}
-            <div className="mb-4">
-              <h1 className="display-5 mb-3">{course.Title}</h1>
-              {course.ImageURL && (
-                <img
-                  src={course.ImageURL}
-                  alt={course.Title}
-                  className="img-fluid rounded shadow-sm"
-                  style={{
-                    width: "100%",
-                    maxHeight: "400px",
-                    objectFit: "cover",
-                  }}
-                />
-              )}
-            </div>
-
             <Row>
               <Col lg={8}>
                 {/* Course Information */}
+                {/* Course Header */}
+                <Card className="mb-4 shadow-sm">
+                  <Card.Body>
+                    <Row className="align-items-center">
+                      <Col md={4} className="text-center">
+                        <Image
+                          src={course.ImageURL}
+                          alt={course.Title}
+                          fallbackSrc="https://via.placeholder.com/300x200?text=No+Image"
+                          className="img-fluid rounded shadow-sm"
+                          style={{
+                            height: "200px",
+                            objectFit: "cover",
+                            width: "100%",
+                          }}
+                        />
+                      </Col>
+                      <Col md={8}>
+                        <h2 className="fw-bold mb-3">{course.Title}</h2>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+
                 <Card className="mb-4 shadow-sm">
                   <Card.Header className="bg-primary text-white">
                     <h4 className="mb-0">
@@ -310,11 +318,10 @@ export default function CourseDetailPage() {
                         <Card.Body>
                           <Row className="align-items-center">
                             <Col xs="auto">
-                              <img
-                                src={
-                                  review.AvatarURL || "/api/placeholder/50/50"
-                                }
+                              <Image
+                                src={review.AvatarURL}
                                 alt={`${review.FullName}'s avatar`}
+                                fallbackSrc="https://via.placeholder.com/50x50?text=User"
                                 className="rounded-circle border"
                                 style={{
                                   width: "50px",

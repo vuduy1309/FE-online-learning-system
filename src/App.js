@@ -11,6 +11,10 @@ import UpdateCoursePage from "./pages/UpdateCoursePage";
 import ListForManager from "./pages/ListForManager";
 import CartPage from "./pages/CartPage";
 import ConfirmOrderPage from "./pages/ConfirmOrderPage";
+import InstructorCourses from "./pages/InstructorCoursesPage";
+import CourseLessons from "./pages/CourseLesson";
+import LessonDetails from "./pages/LessonDetails";
+
 
 function App() {
   return (
@@ -26,6 +30,10 @@ function App() {
         <Route path="/cart/view" element={<CartPage />} />
         <Route path="/checkout" element={<ConfirmOrderPage />} />
         <Route path="/confirm-order" element={<ConfirmOrderPage />} />
+        <Route path="/courses/instructorCourses" element={<InstructorCourses />} />
+        <Route path="/courses/:courseId/lessons" element={<CourseLessons />} />
+        <Route path="/courses/:courseId/lessons/:lessonId" element={<LessonDetails />} />
+
       </Routes>
     </BrowserRouter>
   );

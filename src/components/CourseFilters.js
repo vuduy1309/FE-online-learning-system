@@ -1,5 +1,5 @@
 // src/components/CourseFilters.js
-import { Form, Button, InputGroup } from "react-bootstrap";
+import { Form, Button, InputGroup, Spinner } from "react-bootstrap";
 import { useCourseContext } from "../context/CourseContext";
 
 export function SearchBar() {
@@ -22,8 +22,11 @@ export function SidebarFilters() {
     minPrice,
     maxPrice,
     minRating,
+    selectedInstructor,
+    instructors,
     handlePriceChange,
-    handleRatingChange, // Updated function name
+    handleRatingChange,
+    handleInstructorChange,
     handleResetFilters
   } = useCourseContext();
 
@@ -57,12 +60,30 @@ export function SidebarFilters() {
         </Form.Group>
       </div>
       
+      {/* Instructor Filter */}
+      <div className="mb-4">
+        <h5 className="mb-2">Instructor</h5>
+        <Form.Group className="mb-3">
+          <Form.Select
+            value={selectedInstructor}
+            onChange={(e) => handleInstructorChange(e.target.value)}
+          >
+            <option value="">All Instructors</option>
+            {instructors.map(instructor => (
+              <option key={instructor.UserID} value={instructor.FullName}>
+                {instructor.FullName}
+              </option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+      </div>
+      
       <div className="mb-4">
         <h5 className="mb-2">Rating</h5>
         <Form.Group className="mb-3">
           <Form.Select
             value={minRating}
-            onChange={(e) => handleRatingChange(e.target.value)} // Auto-apply on change
+            onChange={(e) => handleRatingChange(e.target.value)}
           >
             <option value="">Any Rating</option>
             <option value="1">1+ Star</option>
@@ -72,7 +93,6 @@ export function SidebarFilters() {
             <option value="4.5">4.5+ Stars</option>
           </Form.Select>
         </Form.Group>
-        {/* Removed the Apply Rating Filter button */}
       </div>
       
       <Button 

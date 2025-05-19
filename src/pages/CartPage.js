@@ -5,7 +5,6 @@ import {
   Button,
   Spinner,
   Alert,
-  Image,
   Card,
   Row,
   Col,
@@ -15,6 +14,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useCart } from "../context/CartContext";
 import { Link } from "react-router-dom";
+import CartImage from "../components/CartImage";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -94,67 +94,80 @@ export default function CartPage() {
           </Card>
         ) : (
           <>
-          <Row className="mt-4">
-            <Col md={8}>
-            <Card className="shadow-sm">
-              <Card.Body className="p-0">
-                <Table responsive className="mb-0">
-                  <thead className="bg-light">
-                    <tr>
-                      <th className="border-0 py-3 ps-4">Course</th>
-                      <th className="border-0 py-3">Description</th>
-                      <th className="border-0 py-3 text-end">Price</th>
-                      <th className="border-0 py-3 text-center pe-4">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartItems.map((item, index) => (
-                      <tr key={item.CartItemID} className={index !== cartItems.length - 1 ? 'border-bottom' : ''}>
-                        <td className="py-3 ps-4">
-                          <div className="d-flex align-items-center">
-                            <Image
-                              src={item.Image || "/api/placeholder/80/80"}
-                              alt={item.Title}
-                              width={80}
-                              height={80}
-                              className="rounded me-3 flex-shrink-0"
-                              style={{ objectFit: 'cover' }}
-                            />
-                            <div>
-                              <h6 className="mb-1 fw-semibold">{item.Title}</h6>
-                              <small className="text-muted">Course</small>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-3">
-                          <p className="mb-0 text-muted" style={{ maxWidth: '300px' }}>
-                            {item.Description}
-                          </p>
-                        </td>
-                        <td className="py-3 text-end">
-                          <span className="fw-semibold fs-5 text-primary">
-                            ${parseFloat(item.Price).toFixed(2)}
-                          </span>
-                        </td>
-                        <td className="py-3 text-center pe-4">
-                          <Button
-                            variant="outline-danger"
-                            size="sm"
-                            onClick={() => handleRemove(item.CartItemID)}
-                            className="btn-sm"
+            <Row className="mt-4">
+              <Col md={8}>
+                <Card className="shadow-sm">
+                  <Card.Body className="p-0">
+                    <Table responsive className="mb-0">
+                      <thead className="bg-light">
+                        <tr>
+                          <th className="border-0 py-3 ps-4">Course</th>
+                          <th className="border-0 py-3">Description</th>
+                          <th className="border-0 py-3 text-end">Price</th>
+                          <th className="border-0 py-3 text-center pe-4">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cartItems.map((item, index) => (
+                          <tr
+                            key={item.CartItemID}
+                            className={
+                              index !== cartItems.length - 1
+                                ? "border-bottom"
+                                : ""
+                            }
                           >
-                            <i className="fas fa-trash me-1"></i>
-                            Remove
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </Card.Body>
-            </Card>
-
-            
+                            <td className="py-3 ps-4">
+                              <div className="d-flex align-items-center">
+                                <CartImage
+                                  src={item.ImageURL}
+                                  alt={item.Title}
+                                  fallbackSrc="https://via.placeholder.com/80x80?text=No+Image"
+                                  width={80}
+                                  height={80}
+                                  className="rounded me-3 flex-shrink-0"
+                                  style={{ objectFit: "cover" }}
+                                />
+                                <div>
+                                  <h6 className="mb-1 fw-semibold">
+                                    {item.Title}
+                                  </h6>
+                                  <small className="text-muted">Course</small>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-3">
+                              <p
+                                className="mb-0 text-muted"
+                                style={{ maxWidth: "300px" }}
+                              >
+                                {item.Description}
+                              </p>
+                            </td>
+                            <td className="py-3 text-end">
+                              <span className="fw-semibold fs-5 text-primary">
+                                ${parseFloat(item.Price).toFixed(2)}
+                              </span>
+                            </td>
+                            <td className="py-3 text-center pe-4">
+                              <Button
+                                variant="outline-danger"
+                                size="sm"
+                                onClick={() => handleRemove(item.CartItemID)}
+                                className="btn-sm"
+                              >
+                                <i className="fas fa-trash me-1"></i>
+                                Remove
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </Card.Body>
+                </Card>
               </Col>
               <Col md={4}>
                 <Card className="shadow-sm">

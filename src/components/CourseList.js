@@ -1,7 +1,7 @@
-// src/components/CourseList.js
 import { Row, Col, Card, Spinner, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useCourseContext } from "../context/CourseContext";
+import Image from "./Image";
 
 export default function CourseList() {
   const {
@@ -54,14 +54,13 @@ export default function CourseList() {
         {currentCourses.map((course) => (
           <Col md={6} lg={4} key={course.CourseID} className="mb-3">
             <Card className="h-100 shadow-sm">
-              {course.ImageURL && (
-                <Card.Img
-                  variant="top"
-                  src={course.ImageURL}
-                  alt={course.Title}
-                  style={{ height: "160px", objectFit: "cover" }}
-                />
-              )}
+              <Image
+                src={course.ImageURL}
+                alt={course.Title}
+                fallbackSrc="https://via.placeholder.com/300x160?text=No+Image"
+                style={{ height: "160px", objectFit: "cover" }}
+                className="card-img-top"
+              />
               <Card.Body>
                 <Card.Title>
                   <Link to={`/courses/${course.CourseID}`} className="text-decoration-none">
@@ -73,6 +72,12 @@ export default function CourseList() {
                     ? `${course.Description.substring(0, 80)}...`
                     : course.Description}
                 </Card.Text>
+                {course.InstructorName && (
+                  <Card.Text className="text-muted small mb-0">
+                    <i className="bi bi-person-circle me-1"></i>
+                    Instructor: {course.InstructorName}
+                  </Card.Text>
+                )}
               </Card.Body>
               <Card.Footer className="bg-white">
                 <Row>

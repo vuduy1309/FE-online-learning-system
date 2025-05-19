@@ -8,13 +8,13 @@ import {
   Form,
   Row,
   Col,
-  Card,
-  Image,
+  Card
 } from "react-bootstrap";
 import axiosInstance from "../api/axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Image from "../components/Image";
 
 export default function ConfirmOrderPage() {
   const [cartItems, setCartItems] = useState([]);

@@ -18,20 +18,23 @@ export const CourseProvider = ({ children }) => {
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [instructors, setInstructors] = useState([]);
   
   // Filter states
   const [searchTitle, setSearchTitle] = useState(searchParams.get("title") || "");
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "");
   const [minRating, setMinRating] = useState(searchParams.get("minRating") || "");
+  const [selectedInstructor, setSelectedInstructor] = useState(searchParams.get("instructor") || "");
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
   const [coursesPerPage] = useState(6);
   
-  // Fetch courses on initial load
+  // Fetch courses and instructors on initial load
   useEffect(() => {
     fetchCourses();
+    fetchInstructors();
   }, []);
   
   // Apply filters when URL params change
@@ -41,6 +44,7 @@ export const CourseProvider = ({ children }) => {
     const minPriceParam = searchParams.get("minPrice") || "";
     const maxPriceParam = searchParams.get("maxPrice") || "";
     const minRatingParam = searchParams.get("minRating") || "";
+    const instructorParam = searchParams.get("instructor") || "";
     const pageParam = parseInt(searchParams.get("page")) || 1;
     
     // Set states from URL parameters
@@ -48,11 +52,19 @@ export const CourseProvider = ({ children }) => {
     setMinPrice(minPriceParam);
     setMaxPrice(maxPriceParam);
     setMinRating(minRatingParam);
+    setSelectedInstructor(instructorParam);
     setCurrentPage(pageParam);
     
     // Apply filters to courses
     if (courses.length > 0) {
-      applyFilters(courses, titleParam, minPriceParam, maxPriceParam, minRatingParam);
+      applyFilters(
+        courses, 
+        titleParam, 
+        minPriceParam, 
+        maxPriceParam, 
+        minRatingParam, 
+        instructorParam
+      );
     }
   }, [searchParams, courses]);
   
@@ -69,7 +81,8 @@ export const CourseProvider = ({ children }) => {
         searchParams.get("title") || "",
         searchParams.get("minPrice") || "",
         searchParams.get("maxPrice") || "",
-        searchParams.get("minRating") || ""
+        searchParams.get("minRating") || "",
+        searchParams.get("instructor") || ""
       );
     } catch (err) {
       console.error("Error fetching courses:", err);
@@ -79,8 +92,19 @@ export const CourseProvider = ({ children }) => {
     }
   };
   
+  // Fetch instructors for the filter dropdown
+  const fetchInstructors = async () => {
+    try {
+      const res = await axiosInstance.get("/courses/instructors");
+      setInstructors(res.data);
+    } catch (err) {
+      console.error("Error fetching instructors:", err);
+      // Don't set error state here to avoid blocking the main UI
+    }
+  };
+  
   // Apply all filters function
-  const applyFilters = (coursesArray, title, min, max, rating) => {
+  const applyFilters = (coursesArray, title, min, max, rating, instructor) => {
     let filtered = [...coursesArray];
     
     // Filter by title
@@ -104,6 +128,13 @@ export const CourseProvider = ({ children }) => {
     if (rating) {
       filtered = filtered.filter(course => 
         course.AverageRating && parseFloat(course.AverageRating) >= parseFloat(rating)
+      );
+    }
+    
+    // Filter by instructor
+    if (instructor) {
+      filtered = filtered.filter(course => 
+        course.InstructorName && course.InstructorName === instructor
       );
     }
     
@@ -154,7 +185,7 @@ export const CourseProvider = ({ children }) => {
     }
   };
   
-  // Handle rating change (updated to work like price and search)
+  // Handle rating change
   const handleRatingChange = (value) => {
     setMinRating(value);
     
@@ -169,12 +200,28 @@ export const CourseProvider = ({ children }) => {
     setSearchParams(params);
   };
   
+  // Handle instructor change
+  const handleInstructorChange = (value) => {
+    setSelectedInstructor(value);
+    
+    // Update URL parameters
+    const params = new URLSearchParams(searchParams);
+    if (value) {
+      params.set("instructor", value);
+    } else {
+      params.delete("instructor");
+    }
+    params.set("page", "1"); // Reset to first page on new filter
+    setSearchParams(params);
+  };
+  
   // Handle reset filters
   const handleResetFilters = () => {
     setSearchTitle("");
     setMinPrice("");
     setMaxPrice("");
     setMinRating("");
+    setSelectedInstructor("");
     setSearchParams({});
     setCurrentPage(1);
   };
@@ -198,6 +245,7 @@ export const CourseProvider = ({ children }) => {
     filteredCourses,
     loading,
     error,
+    instructors,
     searchTitle,
     setSearchTitle,
     minPrice,
@@ -206,6 +254,8 @@ export const CourseProvider = ({ children }) => {
     setMaxPrice,
     minRating,
     setMinRating,
+    selectedInstructor,
+    setSelectedInstructor,
     currentPage,
     coursesPerPage,
     currentCourses,
@@ -214,7 +264,8 @@ export const CourseProvider = ({ children }) => {
     indexOfLastCourse,
     handleSearchTitleChange,
     handlePriceChange,
-    handleRatingChange, // Updated function name
+    handleRatingChange,
+    handleInstructorChange,
     handleResetFilters,
     handlePageChange,
     refreshCourses: fetchCourses

@@ -52,7 +52,7 @@ export default function Header() {
           <>
             <Nav.Link
               as={Link}
-              to="/courses/listCourse"
+              to="/courses/instructorCourses"
               className="text-dark fw-medium me-3"
             >
               View List Course
@@ -269,7 +269,7 @@ export default function Header() {
                   Settings
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item onClick={logout} className="py-2 text-danger">
+                <Dropdown.Item onClick={logout} as={Link} to="/" className="py-2 text-danger">
                   <i className="fas fa-sign-out-alt me-2"></i>
                   Logout
                 </Dropdown.Item>
