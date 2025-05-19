@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
@@ -9,6 +10,7 @@ import CreateCoursePage from "./pages/CreateCoursePage";
 import UpdateCoursePage from "./pages/UpdateCoursePage";
 import ListForManager from "./pages/ListForManager";
 import CartPage from "./pages/CartPage";
+import ConfirmOrderPage from "./pages/ConfirmOrderPage";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <Route path="/courses/update/:id" element={<UpdateCoursePage />} />
         <Route path="/courses/listCourse" element={<ListForManager />} />
         <Route path="/cart/view" element={<CartPage />} />
+        <Route path="/checkout" element={<ConfirmOrderPage />} />
+        <Route path="/confirm-order" element={<ConfirmOrderPage />} />
       </Routes>
     </BrowserRouter>
   );

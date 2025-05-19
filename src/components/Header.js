@@ -1,12 +1,5 @@
-import {
-  Container,
-  Navbar,
-  Nav,
-  Form,
-  FormControl,
-  Dropdown,
-} from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Container, Navbar, Nav, Button, Dropdown } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
@@ -17,102 +10,292 @@ export default function Header() {
   const { user, logout } = useAuth();
   const [show, setShow] = useState(false);
   const { cartItemsCount } = useCart();
+  const navigate = useNavigate();
+
+  const iconStyle = {
+    fontSize: "20px",
+    color: "#6c757d",
+    cursor: "pointer",
+    transition: "color 0.2s ease",
+  };
+
+  const iconHoverStyle = {
+    color: "#495057",
+  };
+
+  const renderRoleBasedNav = () => {
+    if (!user) return null;
+
+    switch (user.roleId) {
+      case 1:
+        return (
+          <Nav.Link
+            as={Link}
+            to="/dashboard"
+            className="text-dark fw-medium me-3"
+          >
+            Dashboard
+          </Nav.Link>
+        );
+      case 2:
+        return (
+          <Nav.Link
+            as={Link}
+            to="/courses/listCourse"
+            className="text-dark fw-medium me-3"
+          >
+            Manage Courses
+          </Nav.Link>
+        );
+      case 3:
+        return (
+          <>
+            <Nav.Link
+              as={Link}
+              to="/courses/listCourse"
+              className="text-dark fw-medium me-3"
+            >
+              View List Course
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/quiz/manage"
+              className="text-dark fw-medium me-3"
+            >
+              Manage Quiz
+            </Nav.Link>
+          </>
+        );
+      case 5:
+        return (
+          <Nav.Link
+            as={Link}
+            to="/complaints/list"
+            className="text-dark fw-medium me-3"
+          >
+            View List Khiếu Nại
+          </Nav.Link>
+        );
+      default:
+        return (
+          <Nav.Link
+            as={Link}
+            to="/courses"
+            className="text-dark fw-medium me-3"
+          >
+            Courses
+          </Nav.Link>
+        );
+    }
+  };
+
   return (
-    <Navbar bg="white" expand="lg" className="shadow-sm px-3 py-2">
-      <Container>
-        <Navbar.Brand as={Link} to="/" className="fw-bold fs-4 text-dark">
-          <span style={{ color: "#5624d0" }}>Online</span> learning system
+    <Navbar bg="white" className="shadow-sm border-bottom">
+      <Container className="px-4">
+        <Navbar.Brand
+          as={Link}
+          to="/"
+          className="fw-bold fs-4 text-decoration-none"
+        >
+          <span style={{ color: "#5624d0" }}>EduPlatform</span>
+          <small className="text-muted ms-2 fw-normal d-none d-md-inline">
+            Online Learning
+          </small>
         </Navbar.Brand>
-        <Form className="d-flex flex-grow-1 mx-3" style={{ maxWidth: "600px" }}>
-          <FormControl
-            type="search"
-            placeholder="Find your next course by skill, topic, or instructor"
-            className="rounded-pill px-4"
-            style={{ border: "1px solid #ccc", height: "40px" }}
-          />
-        </Form>
 
-        <Nav className="ms-auto align-items-center gap-3">
-          <Nav.Link className="text-dark">About Us</Nav.Link>
-          {user?.roleId === 2 ? (
-            <Nav.Link as={Link} to="/courses/listCourse" className="text-dark">
-              Manage Course
-            </Nav.Link>
-          ) : (
-            <Nav.Link as={Link} to="/courses" className="text-dark">
-              Course
-            </Nav.Link>
-          )}
+        <div className="d-flex align-items-center gap-2">
+          <Nav.Link
+            as={Link}
+            to="/"
+            className="text-dark fw-medium d-none me-3 d-lg-block"
+          >
+            Home
+          </Nav.Link>
+          <Nav.Link
+            as={Link}
+            to="/about"
+            className="text-dark fw-medium d-none me-3 d-lg-block"
+          >
+            About
+          </Nav.Link>
+          {renderRoleBasedNav()}
+          <Nav.Link
+            as={Link}
+            to="/support"
+            className="text-dark fw-medium d-none  d-lg-block"
+          >
+            Support
+          </Nav.Link>
+        </div>
 
-          <Nav.Link className="text-dark">My Profile</Nav.Link>
+        <Nav className=" d-flex align-items-center">
+          <div className="d-flex align-items-center gap-3 me-3">
+            <Link
+              to="/wishlist"
+              className="text-decoration-none position-relative"
+              title="Wishlist"
+            >
+              <FaHeart
+                style={iconStyle}
+                onMouseOver={(e) =>
+                  (e.target.style.color = iconHoverStyle.color)
+                }
+                onMouseOut={(e) => (e.target.style.color = iconStyle.color)}
+              />
+            </Link>
 
-          <FaHeart ></FaHeart>
-          <Link to="/cart/view" className="position-relative">
-            <FaShoppingCart color="black" />
-            {cartItemsCount > 0 && (
+            <Link
+              to="/cart/view"
+              className="text-decoration-none position-relative"
+              title="Shopping Cart"
+            >
+              <FaShoppingCart
+                style={iconStyle}
+                onMouseOver={(e) =>
+                  (e.target.style.color = iconHoverStyle.color)
+                }
+                onMouseOut={(e) => (e.target.style.color = iconStyle.color)}
+              />
+              {cartItemsCount > 0 && (
+                <span
+                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  style={{
+                    fontSize: "10px",
+                    padding: "3px 6px",
+                    minWidth: "18px",
+                    height: "18px",
+                    lineHeight: "12px",
+                  }}
+                >
+                  {cartItemsCount > 99 ? "99+" : cartItemsCount}
+                </span>
+              )}
+            </Link>
+
+            <div className="position-relative" title="Notifications">
+              <FaBell
+                style={iconStyle}
+                onMouseOver={(e) =>
+                  (e.target.style.color = iconHoverStyle.color)
+                }
+                onMouseOut={(e) => (e.target.style.color = iconStyle.color)}
+              />
               <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark"
+                className="position-absolute top-0 start-100 translate-middle bg-warning rounded-circle"
                 style={{
-                  fontSize: "0.55rem",
-                  padding: "2px 4px",
-                  minWidth: "16px",
-                  height: "16px",
+                  width: "8px",
+                  height: "8px",
+                }}
+              ></span>
+            </div>
+
+            <div className="position-relative" title="Messages">
+              <FaMessage
+                style={iconStyle}
+                onMouseOver={(e) =>
+                  (e.target.style.color = iconHoverStyle.color)
+                }
+                onMouseOut={(e) => (e.target.style.color = iconStyle.color)}
+              />
+              <span
+                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"
+                style={{
+                  fontSize: "10px",
+                  padding: "3px 6px",
+                  minWidth: "18px",
+                  height: "18px",
                   lineHeight: "12px",
                 }}
               >
-                {cartItemsCount}
+                3
               </span>
-            )}
-          </Link>
-          <FaBell></FaBell>
-          <div className="position-relative" style={{ fontSize: "0.85rem" }}>
-            <FaMessage></FaMessage>
-            <span
-              className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark"
-              style={{
-                fontSize: "0.55rem",
-                padding: "2px 4px",
-                minWidth: "16px",
-                height: "16px",
-                lineHeight: "12px",
-              }}
-            >
-              3
-            </span>
+            </div>
           </div>
 
           {user ? (
             <Dropdown align="end" show={show} onToggle={() => setShow(!show)}>
               <div
                 onClick={() => setShow(!show)}
-                className="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center"
-                style={{
-                  width: "32px",
-                  height: "32px",
-                  fontSize: "16px",
-                  cursor: "pointer",
-                }}
+                className="d-flex align-items-center cursor-pointer"
+                style={{ cursor: "pointer" }}
               >
-                {user.fullName?.[0]?.toUpperCase() || "U"}
+                <div
+                  className="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-2"
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {user.fullName?.[0]?.toUpperCase() || "U"}
+                </div>
+                <div className="d-none d-md-block">
+                  <div
+                    className="text-dark fw-medium"
+                    style={{ fontSize: "14px" }}
+                  >
+                    {user.fullName || "User"}
+                  </div>
+                  <small className="text-muted">
+                    {user.roleId === 1 && "Admin"}
+                    {user.roleId === 2 && "Manager"}
+                    {user.roleId === 3 && "Instructor"}
+                    {user.roleId === 5 && "Support"}
+                    {![1, 2, 3, 5].includes(user.roleId) && "Student"}
+                  </small>
+                </div>
+                <i
+                  className="fas fa-chevron-down ms-2 text-muted"
+                  style={{ fontSize: "12px" }}
+                ></i>
               </div>
 
-              <Dropdown.Menu>
-                <Dropdown.ItemText>Hello, {user.fullName}</Dropdown.ItemText>
-                <Dropdown.Divider />
-                <Dropdown.Item as={Link} to="/profile">
-                  Profile
+              <Dropdown.Menu className="shadow-sm border-0 mt-2">
+                <Dropdown.ItemText className="px-3 py-2 border-bottom">
+                  <div className="fw-semibold">{user.fullName}</div>
+                  <small className="text-muted">{user.email}</small>
+                </Dropdown.ItemText>
+                <Dropdown.Item as={Link} to="/profile" className="py-2">
+                  <i className="fas fa-user me-2"></i>
+                  My Profile
                 </Dropdown.Item>
-                <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/my-courses" className="py-2">
+                  <i className="fas fa-graduation-cap me-2"></i>
+                  My Courses
+                </Dropdown.Item>
+                <Dropdown.Item as={Link} to="/settings" className="py-2">
+                  <i className="fas fa-cog me-2"></i>
+                  Settings
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={logout} className="py-2 text-danger">
+                  <i className="fas fa-sign-out-alt me-2"></i>
+                  Logout
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           ) : (
-            <Nav.Link
-              as={Link}
-              to="/login"
-              className="btn btn-outline-dark btn-sm"
-            >
-              Login
-            </Nav.Link>
+            <div className="d-flex gap-2">
+              <Button
+                as={Link}
+                to="/login"
+                variant="outline-primary"
+                className="fw-medium"
+                style={{ fontSize: "14px" }}
+              >
+                Login
+              </Button>
+              <Button
+                as={Link}
+                to="/register"
+                variant="primary"
+                className="fw-medium d-none d-sm-block"
+                style={{ fontSize: "14px" }}
+              >
+                Sign Up
+              </Button>
+            </div>
           )}
         </Nav>
       </Container>
