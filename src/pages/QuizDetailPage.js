@@ -15,7 +15,7 @@ const QuizDetailPage = () => {
     const fetchQuiz = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get(`/quizzes/${lessonId}`);
+        const response = await axiosInstance.get(`/quizzes/lesson/${lessonId}`);
         setQuiz(response.data);
         setError(null);
       } catch (error) {
@@ -89,7 +89,7 @@ const QuizDetailPage = () => {
         <button onClick={() => navigate(-1)} className="btn btn-secondary me-2">
           Back
         </button>
-        <button onClick={() => navigate(`/update-quiz/${lessonId}`)} className="btn btn-primary">
+        <button onClick={() => navigate(`/update-quiz/${quiz.QuizID}`)} className="btn btn-primary">
           Edit Quiz
         </button>
       </div>

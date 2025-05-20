@@ -26,7 +26,7 @@ const LessonDetails = () => {
     Example: "",
     OrderNumber: 1,
   });
-  
+
   useEffect(() => {
     const fetchLessonDetails = async () => {
       try {
@@ -194,29 +194,6 @@ const LessonDetails = () => {
       <Header />
       <div className="container mt-4 mb-5">
         {/* Breadcrumb Navigation */}
-        <nav aria-label="breadcrumb" className="mb-4">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <Link
-                to="/courses/instructorCourses"
-                className="text-decoration-none"
-              >
-                <i className="bi bi-house me-1"></i>Courses
-              </Link>
-            </li>
-            <li className="breadcrumb-item">
-              <Link
-                to={`/courses/${courseId}/lessons`}
-                className="text-decoration-none"
-              >
-                Course Details
-              </Link>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              {lesson?.Title}
-            </li>
-          </ol>
-        </nav>
 
         {/* Back Button */}
         <div className="mb-4">
@@ -501,12 +478,21 @@ const LessonDetails = () => {
 
         {/* Quizzes Section */}
         <div className="card shadow-sm">
-          <div className="card-header bg-warning text-dark">
+          <div className="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
             <h4 className="mb-0">
               <i className="bi bi-question-circle me-2"></i>Quizzes &
               Assessments
             </h4>
+            <div>
+              <Link
+                to={`/lesson/${lessonId}/add-quiz`}
+                className="btn btn-sm btn-light me-2"
+              >
+                <i className="bi bi-plus-circle me-1"></i>Add Quiz
+              </Link>
+            </div>
           </div>
+
           <div className="card-body">
             {quizzes.length > 0 ? (
               <div className="row">
@@ -530,16 +516,6 @@ const LessonDetails = () => {
                           >
                             <i className="bi bi-eye me-2"></i>View Quiz
                           </button>
-                          <button
-                            className="btn btn-outline-warning"
-                            onClick={() =>
-                              navigate(
-                                `/courses/${courseId}/lessons/${lessonId}/quizzes/${quiz.QuizID}/edit`
-                              )
-                            }
-                          >
-                            <i className="bi bi-pencil me-2"></i>Edit
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -555,11 +531,7 @@ const LessonDetails = () => {
                 <p className="text-muted mt-2">No quizzes available yet.</p>
                 <button
                   className="btn btn-warning"
-                  onClick={() =>
-                    navigate(
-                      `/instructor/courses/${courseId}/lessons/${lessonId}/quizzes/create`
-                    )
-                  }
+                  onClick={() => navigate(`/lesson/${lessonId}/add-quiz`)}
                 >
                   <i className="bi bi-plus-circle me-2"></i>Create First Quiz
                 </button>
