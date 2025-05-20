@@ -16,9 +16,17 @@ const LessonDetails = () => {
   const [newMaterial, setNewMaterial] = useState({
     MaterialType: "",
     URL: "",
-    Description: "",
   });
 
+  const [isEditingLesson, setIsEditingLesson] = useState(false);
+  const [editedLesson, setEditedLesson] = useState({
+    Title: "",
+    Introduction: "",
+    Content: "",
+    Example: "",
+    OrderNumber: 1,
+  });
+  
   useEffect(() => {
     const fetchLessonDetails = async () => {
       try {
@@ -35,6 +43,13 @@ const LessonDetails = () => {
 
         if (res.data.success) {
           setLesson(res.data.lesson);
+          setEditedLesson({
+            Title: res.data.lesson.Title || "",
+            Introduction: res.data.lesson.Introduction || "",
+            Content: res.data.lesson.Content || "",
+            Example: res.data.lesson.Example || "",
+            OrderNumber: res.data.lesson.OrderNumber || 1,
+          });
           setMaterials(res.data.materials);
           setQuizzes(res.data.quizzes);
         } else {
@@ -93,9 +108,33 @@ const LessonDetails = () => {
   };
 
   const handleViewQuiz = (quizId) => {
-    navigate(
-      `/instructor/courses/${courseId}/lessons/${lessonId}/quizzes/${quizId}`
-    );
+    navigate(`/courses/${courseId}/lessons/quizzes/${lessonId}`);
+  };
+
+  const handleUpdateLesson = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axiosInstance.put(
+        `/courses/${courseId}/lessons/${lessonId}`,
+        editedLesson,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+        setLesson(res.data.updatedLesson);
+        setIsEditingLesson(false);
+      } else {
+        alert("Update failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error updating lesson:", err);
+      alert("An error occurred while updating lesson.");
+    }
   };
 
   if (loading) {
@@ -158,13 +197,16 @@ const LessonDetails = () => {
         <nav aria-label="breadcrumb" className="mb-4">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-              <Link to="/instructor/courses" className="text-decoration-none">
+              <Link
+                to="/courses/instructorCourses"
+                className="text-decoration-none"
+              >
                 <i className="bi bi-house me-1"></i>Courses
               </Link>
             </li>
             <li className="breadcrumb-item">
               <Link
-                to={`/instructor/courses/${courseId}`}
+                to={`/courses/${courseId}/lessons`}
                 className="text-decoration-none"
               >
                 Course Details
@@ -179,7 +221,7 @@ const LessonDetails = () => {
         {/* Back Button */}
         <div className="mb-4">
           <Link
-            to={`/instructor/courses/${courseId}`}
+            to={`/courses/${courseId}/lessons`}
             className="btn btn-outline-secondary"
           >
             <i className="bi bi-arrow-left me-2"></i>Back to Lessons
@@ -188,11 +230,106 @@ const LessonDetails = () => {
 
         {/* Lesson Content Card */}
         <div className="card shadow-sm mb-4">
-          <div className="card-header bg-primary text-white">
+          <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h2 className="card-title mb-0">
               <i className="bi bi-book me-2"></i>
               {lesson.Title}
             </h2>
+            <button
+              className="btn btn-light btn-sm"
+              onClick={() => setIsEditingLesson(!isEditingLesson)}
+            >
+              <i
+                className={`bi ${isEditingLesson ? "bi-x" : "bi-pencil"} me-1`}
+              ></i>
+              {isEditingLesson ? "Cancel" : "Edit Lesson"}
+            </button>
+          </div>
+
+          <div className="card-body">
+            {isEditingLesson && (
+              <form
+                onSubmit={handleUpdateLesson}
+                className="card card-body shadow-sm mb-4 border border-primary"
+              >
+                <div className="mb-3">
+                  <label className="form-label">Title</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editedLesson.Title}
+                    onChange={(e) =>
+                      setEditedLesson({
+                        ...editedLesson,
+                        Title: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Introduction</label>
+                  <textarea
+                    className="form-control"
+                    rows="2"
+                    value={editedLesson.Introduction}
+                    onChange={(e) =>
+                      setEditedLesson({
+                        ...editedLesson,
+                        Introduction: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Content (HTML allowed)</label>
+                  <textarea
+                    className="form-control"
+                    rows="4"
+                    value={editedLesson.Content}
+                    onChange={(e) =>
+                      setEditedLesson({
+                        ...editedLesson,
+                        Content: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Example</label>
+                  <textarea
+                    className="form-control"
+                    rows="2"
+                    value={editedLesson.Example}
+                    onChange={(e) =>
+                      setEditedLesson({
+                        ...editedLesson,
+                        Example: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Order Number</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={editedLesson.OrderNumber}
+                    onChange={(e) =>
+                      setEditedLesson({
+                        ...editedLesson,
+                        OrderNumber: parseInt(e.target.value),
+                      })
+                    }
+                    required
+                    min="1"
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  <i className="bi bi-save me-2"></i>Save Changes
+                </button>
+              </form>
+            )}
           </div>
           <div className="card-body">
             {lesson.Introduction && (
@@ -283,21 +420,6 @@ const LessonDetails = () => {
                       }
                       placeholder="https://example.com/resource"
                       required
-                    />
-                  </div>
-                  <div className="col-md-4 mb-3">
-                    <label className="form-label">Description (Optional)</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={newMaterial.Description}
-                      onChange={(e) =>
-                        setNewMaterial({
-                          ...newMaterial,
-                          Description: e.target.value,
-                        })
-                      }
-                      placeholder="Brief description"
                     />
                   </div>
                 </div>
@@ -412,7 +534,7 @@ const LessonDetails = () => {
                             className="btn btn-outline-warning"
                             onClick={() =>
                               navigate(
-                                `/instructor/courses/${courseId}/lessons/${lessonId}/quizzes/${quiz.QuizID}/edit`
+                                `/courses/${courseId}/lessons/${lessonId}/quizzes/${quiz.QuizID}/edit`
                               )
                             }
                           >

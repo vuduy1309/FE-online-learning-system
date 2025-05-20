@@ -14,6 +14,7 @@ import ConfirmOrderPage from "./pages/ConfirmOrderPage";
 import InstructorCourses from "./pages/InstructorCoursesPage";
 import CourseLessons from "./pages/CourseLesson";
 import LessonDetails from "./pages/LessonDetails";
+import QuizDetailPage from "./pages/QuizDetailPage";
 
 
 function App() {
@@ -33,7 +34,7 @@ function App() {
         <Route path="/courses/instructorCourses" element={<InstructorCourses />} />
         <Route path="/courses/:courseId/lessons" element={<CourseLessons />} />
         <Route path="/courses/:courseId/lessons/:lessonId" element={<LessonDetails />} />
-
+        <Route path="/courses/:courseId/lessons/quizzes/:lessonId" element={<QuizDetailPage />} />
       </Routes>
     </BrowserRouter>
   );
