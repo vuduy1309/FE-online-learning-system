@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../api/axios";
+import axiosInstance from "../../api/axios";
 import {
   Button,
   Form,
@@ -10,8 +10,8 @@ import {
   Card,
   CloseButton,
 } from "react-bootstrap";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 const AddQuizPage = () => {
   const { lessonId } = useParams();

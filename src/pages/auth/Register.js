@@ -1,7 +1,7 @@
-import AuthForm from "../components/AuthForm";
-import axiosInstance from "../api/axios";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import AuthForm from "../../components/auth/AuthForm";
+import axiosInstance from "../../api/axios";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function Register() {
   const handleRegister = async (data) => {

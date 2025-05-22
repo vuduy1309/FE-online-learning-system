@@ -1,7 +1,7 @@
 import { Row, Col, Card, Spinner, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useCourseContext } from "../context/CourseContext";
-import Image from "./Image";
+import { useCourseContext } from "../../context/CourseContext";
+import Image from "../image/Image";
 
 export default function CourseList() {
   const {

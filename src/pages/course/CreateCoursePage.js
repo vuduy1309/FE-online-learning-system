@@ -1,30 +1,23 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "../api/axios";
-import { Form, Button, Container, Alert, Spinner, Image } from "react-bootstrap";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import axiosInstance from "../../api/axios";
+import { Form, Button, Container, Alert, Image } from "react-bootstrap";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
-export default function UpdateCoursePage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+export default function CreateCoursePage() {
   const [form, setForm] = useState({
     Title: "",
     Description: "",
     Price: "",
-    ImageURL: "",
-    Status: "",
     InstructorID: "",
   });
-  
+
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
-  const [updated, setUpdated] = useState(false);
-  const [error, setError] = useState("");
   const [instructors, setInstructors] = useState([]);
-  const [currentInstructorID, setCurrentInstructorID] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Lấy base URL từ axios instance hoặc environment variable
   const API_BASE_URL =
@@ -33,47 +26,18 @@ export default function UpdateCoursePage() {
     "http://localhost:5000";
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchInstructors = async () => {
       try {
-        // Load course data
-        const courseRes = await axiosInstance.get(`/courses/getCourseById/${id}`);
-        setForm(courseRes.data);
-        
-        // If there's an existing image, set the preview
-        if (courseRes.data.ImageURL) {
-          setImagePreview(`${API_BASE_URL}${courseRes.data.ImageURL}`);
-        }
-        
-        // Load instructors
-        const instructorsRes = await axiosInstance.get("/courses/instructors");
-        setInstructors(instructorsRes.data);
-        
-        // Get current instructor for this course
-        const courseDetailsRes = await axiosInstance.get(`/courses/${id}`);
-        if (courseDetailsRes.data) {
-          const instructorName = courseDetailsRes.data.InstructorName;
-          const instructor = instructorsRes.data.find(
-            instructor => instructor.FullName === instructorName
-          );
-          if (instructor) {
-            setCurrentInstructorID(instructor.UserID);
-            setForm(prev => ({
-              ...prev,
-              InstructorID: instructor.UserID
-            }));
-          }
-        }
-        
-        setLoading(false);
+        const response = await axiosInstance.get("/courses/instructors");
+        setInstructors(response.data);
       } catch (err) {
-        console.error(err);
-        setError("Failed to load course data");
-        setLoading(false);
+        console.error("Error fetching instructors:", err);
+        setError("Failed to load instructors");
       }
     };
 
-    fetchData();
-  }, [id, API_BASE_URL]);
+    fetchInstructors();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -105,41 +69,19 @@ export default function UpdateCoursePage() {
     }
   };
 
-  const removeImage = () => {
-    setImageFile(null);
-    // If we're removing a newly selected image but had an original image,
-    // revert to the original
-    if (form.ImageURL && !imageFile) {
-      setImagePreview(`${API_BASE_URL}${form.ImageURL}`);
-    } else {
-      setImagePreview(null);
-      setForm({ ...form, ImageURL: "" });
-    }
-    
-    const fileInput = document.getElementById("imageFile");
-    if (fileInput) fileInput.value = "";
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setUpdating(true);
+    setLoading(true);
 
     try {
-      // Create FormData to send both form data and file
+      // Tạo FormData để gửi cả form data và file
       const formData = new FormData();
       formData.append("Title", form.Title);
       formData.append("Description", form.Description);
       formData.append("Price", form.Price);
-      formData.append("Status", form.Status || "active");
       formData.append("InstructorID", form.InstructorID);
-      
-      // Only append ImageURL if not uploading a new file
-      if (!imageFile && form.ImageURL) {
-        formData.append("ImageURL", form.ImageURL);
-      }
 
-      // Append the new image file if one was selected
       if (imageFile) {
         formData.append("image", imageFile);
       }
@@ -150,58 +92,70 @@ export default function UpdateCoursePage() {
         console.log(key, value);
       }
 
-      const response = await axiosInstance.put(`/courses/update/${id}`, formData, {
+      const response = await axiosInstance.post("/courses/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      setUpdated(true);
-      setUpdating(false);
-      
-      // Set timeout to redirect after showing success message
-      setTimeout(() => {
-        navigate("/courses/listCourse");
-      }, 2000);
-      
+      setSuccess(true);
+      setForm({
+        Title: "",
+        Description: "",
+        Price: "",
+        InstructorID: "",
+      });
+      setImageFile(null);
+      setImagePreview(null);
+
+      // Reset file input
+      const fileInput = document.getElementById("imageFile");
+      if (fileInput) fileInput.value = "";
+
+      // Có thể hiển thị ảnh đã upload thành công
+      if (response.data.imageUrl) {
+        console.log(
+          "Image uploaded successfully:",
+          `${API_BASE_URL}${response.data.imageUrl}`
+        );
+      }
     } catch (err) {
-      console.error("Error updating course:", err);
-      setError(err.response?.data?.error || "Failed to update course");
-      setUpdating(false);
+      console.error("Error creating course:", err);
+      setError(err.response?.data?.error || "Failed to create course");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <>
-        <Header />
-        <Container className="text-center mt-5">
-          <Spinner animation="border" className="m-5" />
-          <p>Loading course data...</p>
-        </Container>
-        <Footer />
-      </>
-    );
-  }
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    const fileInput = document.getElementById("imageFile");
+    if (fileInput) fileInput.value = "";
+  };
 
   return (
     <>
       <Header />
       <Container className="mt-5" style={{ maxWidth: "600px" }}>
-        <h2>Update Course</h2>
-        
-        {updated && (
-          <Alert variant="success" dismissible onClose={() => setUpdated(false)}>
-            Course updated successfully! Redirecting...
+        <h2>Create New Course</h2>
+
+        {success && (
+          <Alert
+            variant="success"
+            dismissible
+            onClose={() => setSuccess(false)}
+          >
+            Course created successfully!
           </Alert>
         )}
-        
+
         {error && (
           <Alert variant="danger" dismissible onClose={() => setError("")}>
             {error}
           </Alert>
         )}
-        
+
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Title</Form.Label>
@@ -213,7 +167,7 @@ export default function UpdateCoursePage() {
               placeholder="Enter course title"
             />
           </Form.Group>
-          
+
           <Form.Group className="mb-3">
             <Form.Label>Description</Form.Label>
             <Form.Control
@@ -226,7 +180,7 @@ export default function UpdateCoursePage() {
               placeholder="Enter course description"
             />
           </Form.Group>
-          
+
           <Form.Group className="mb-3">
             <Form.Label>Price (USD)</Form.Label>
             <Form.Control
@@ -240,7 +194,7 @@ export default function UpdateCoursePage() {
               placeholder="0.00"
             />
           </Form.Group>
-          
+
           <Form.Group className="mb-3">
             <Form.Label>Course Image</Form.Label>
             <Form.Control
@@ -257,7 +211,7 @@ export default function UpdateCoursePage() {
             {imagePreview && (
               <div className="mt-3">
                 <div className="d-flex justify-content-between align-items-center mb-2">
-                  <small className="text-muted">Current image:</small>
+                  <small className="text-muted">Preview:</small>
                   <Button
                     variant="outline-danger"
                     size="sm"
@@ -268,19 +222,19 @@ export default function UpdateCoursePage() {
                 </div>
                 <Image
                   src={imagePreview}
-                  alt="Course image"
+                  alt="Preview"
                   thumbnail
                   style={{ maxWidth: "200px", maxHeight: "200px" }}
                 />
               </div>
             )}
           </Form.Group>
-          
+
           <Form.Group className="mb-3">
             <Form.Label>Select Instructor</Form.Label>
             <Form.Select
               name="InstructorID"
-              value={form.InstructorID || currentInstructorID}
+              value={form.InstructorID}
               onChange={handleChange}
               required
             >
@@ -292,33 +246,19 @@ export default function UpdateCoursePage() {
               ))}
             </Form.Select>
           </Form.Group>
-          
-          <Form.Group className="mb-3">
-            <Form.Label>Status</Form.Label>
-            <Form.Select
-              name="Status"
-              value={form.Status || "active"}
-              onChange={handleChange}
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="draft">Draft</option>
-            </Form.Select>
-          </Form.Group>
-          
-          <div className="d-flex justify-content-between">
-            <Button 
-              variant="secondary" 
-              onClick={() => navigate("/courses/listCourse")}
-            >
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
+
+          <div className="d-grid">
+            <Button
+              type="submit"
               variant="primary"
-              disabled={updating}
+              size="lg"
+              disabled={!instructors.length || loading}
             >
-              {updating ? "Updating..." : "Update Course"}
+              {loading
+                ? "Creating Course..."
+                : !instructors.length
+                ? "Loading instructors..."
+                : "Create Course"}
             </Button>
           </div>
         </Form>

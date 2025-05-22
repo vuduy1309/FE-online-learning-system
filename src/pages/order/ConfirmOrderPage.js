@@ -10,11 +10,11 @@ import {
   Col,
   Card
 } from "react-bootstrap";
-import axiosInstance from "../api/axios";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import Image from "../components/Image";
+import Image from "../../components/image/Image";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import axiosInstance from "../../api/axios";
 
 export default function ConfirmOrderPage() {
   const [cartItems, setCartItems] = useState([]);

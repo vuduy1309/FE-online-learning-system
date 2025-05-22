@@ -57,13 +57,6 @@ export default function Header() {
             >
               View List Course
             </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/quiz/manage"
-              className="text-dark fw-medium me-3"
-            >
-              Manage Quiz
-            </Nav.Link>
           </>
         );
       case 5:

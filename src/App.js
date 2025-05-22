@@ -2,21 +2,23 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 import HomePage from "./pages/HomePage";
-import CourseDetailPage from "./pages/CourseDetailPage";
-import CreateCoursePage from "./pages/CreateCoursePage";
-import UpdateCoursePage from "./pages/UpdateCoursePage";
-import ListForManager from "./pages/ListForManager";
-import CartPage from "./pages/CartPage";
-import ConfirmOrderPage from "./pages/ConfirmOrderPage";
-import InstructorCourses from "./pages/InstructorCoursesPage";
-import CourseLessons from "./pages/CourseLesson";
-import LessonDetails from "./pages/LessonDetails";
-import QuizDetailPage from "./pages/QuizDetailPage";
-import UpdateQuizPage from "./pages/UpdateQuizPage";
-import AddQuizPage from "./pages/AddQuizPage";
+import CourseDetailPage from "./pages/course/CourseDetailPage";
+import CreateCoursePage from "./pages/course/CreateCoursePage";
+import UpdateCoursePage from "./pages/course/UpdateCoursePage";
+import ListForManager from "./pages/course/ListForManager";
+import CartPage from "./pages/cart/CartPage";
+import ConfirmOrderPage from "./pages/order/ConfirmOrderPage";
+import InstructorCourses from "./pages/course/InstructorCoursesPage";
+import CourseLessons from "./pages/lesson/CourseLesson";
+import LessonDetails from "./pages/lesson/LessonDetails";
+import UpdateQuizPage from "./pages/quiz/UpdateQuizPage";
+import OrderDetails from "./pages/order/OrderDetailsPage";
+import AddQuizPage from "./pages/quiz/AddQuizPage";
+import QuizDetailPage from "./pages/quiz/QuizDetailPage";
+import OrderList from "./pages/order/OderList";
 
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
         <Route path="/courses/:courseId/lessons/quizzes/:lessonId" element={<QuizDetailPage />} />
         <Route path="/update-quiz/:quizId" element={<UpdateQuizPage />} />
         <Route path="/lesson/:lessonId/add-quiz" element={<AddQuizPage />} />
+        <Route path="/orderList" element={<OrderList />} />
+        <Route path="/orderDetails/:orderId" element={<OrderDetails />} />
       </Routes>
     </BrowserRouter>
   );

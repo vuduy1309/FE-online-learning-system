@@ -9,12 +9,12 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import axiosInstance from "../api/axios";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { useCart } from "../context/CartContext";
+import axiosInstance from "../../api/axios";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import { useCart } from "../../context/CartContext";
 import { Link } from "react-router-dom";
-import CartImage from "../components/CartImage";
+import CartImage from "../../components/image/CartImage";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);

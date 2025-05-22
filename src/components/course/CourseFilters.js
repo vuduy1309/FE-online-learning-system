@@ -1,6 +1,6 @@
 // src/components/CourseFilters.js
 import { Form, Button, InputGroup, Spinner } from "react-bootstrap";
-import { useCourseContext } from "../context/CourseContext";
+import { useCourseContext } from "../../context/CourseContext";
 
 export function SearchBar() {
   const { searchTitle, handleSearchTitleChange } = useCourseContext();

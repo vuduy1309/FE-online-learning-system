@@ -15,9 +15,9 @@ import {
   DropdownButton,
   Badge
 } from "react-bootstrap";
-import axiosInstance from "../api/axios";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import axiosInstance from "../../api/axios";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import { Link } from "react-router-dom";
 
 export default function ListForManager() {
@@ -181,6 +181,15 @@ export default function ListForManager() {
                 className="fw-semibold"
               >
                 Create New Course
+              </Button>
+
+              <Button
+                as={Link}
+                to="/orderList"
+                variant="primary"
+                className="fw-semibold"
+              >
+                View Order List
               </Button>
             </div>
           </Col>

@@ -2,9 +2,9 @@
 import { Container, Row, Col } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { SearchBar, SidebarFilters } from "../components/CourseFilters";
-import CourseList from "../components/CourseList";
-import CoursePagination from "../components/CoursePagination";
+import { SearchBar, SidebarFilters } from "../components/course/CourseFilters";
+import CourseList from "../components/course/CourseList";
+import CoursePagination from "../components/course/CoursePagination";
 import { CourseProvider } from "../context/CourseContext";
 
 export default function HomePage() {

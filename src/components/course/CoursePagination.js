@@ -1,6 +1,6 @@
 // src/components/CoursePagination.js
 import { Pagination } from "react-bootstrap";
-import { useCourseContext } from "../context/CourseContext";
+import { useCourseContext } from "../../context/CourseContext";
 
 export default function CoursePagination() {
   const { currentPage, totalPages, handlePageChange } = useCourseContext();
