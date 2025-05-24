@@ -19,6 +19,9 @@ import OrderDetails from "./pages/order/OrderDetailsPage";
 import AddQuizPage from "./pages/quiz/AddQuizPage";
 import QuizDetailPage from "./pages/quiz/QuizDetailPage";
 import OrderList from "./pages/order/OderList";
+import EnrolledCourses from "./pages/course/EnrolledCourses";
+import AvailableLessons from "./pages/lesson/AvailableLessons";
+import LearnLessonPage from "./pages/lesson/LearnLessonPage";
 
 
 function App() {
@@ -43,6 +46,9 @@ function App() {
         <Route path="/lesson/:lessonId/add-quiz" element={<AddQuizPage />} />
         <Route path="/orderList" element={<OrderList />} />
         <Route path="/orderDetails/:orderId" element={<OrderDetails />} />
+        <Route path="/enrollments/my-courses" element={<EnrolledCourses />} />
+        <Route path="/availableLessons/:CourseID" element={<AvailableLessons />} />
+        <Route path="/learn/:lessonId" element={<LearnLessonPage />} />
       </Routes>
     </BrowserRouter>
   );
