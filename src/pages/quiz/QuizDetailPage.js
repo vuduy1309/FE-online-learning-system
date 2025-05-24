@@ -47,7 +47,7 @@ const QuizDetailPage = () => {
           {quiz.Questions.map((question, qIndex) => (
             <div key={qIndex} className="mb-4 p-3 border rounded">
               <h5>
-                <strong>Câu {qIndex + 1}:</strong> {question.Content}
+                <strong>Question {qIndex + 1}:</strong> {question.Content}
               </h5>
 
               {question.ImageURL && (

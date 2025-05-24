@@ -74,7 +74,7 @@ const AvailableLessons = () => {
             <div className="spinner-border text-primary mb-3" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
-            <p className="text-muted">Đang tải bài học của bạn...</p>
+            <p className="text-muted">Loading your lessons...</p>
           </div>
         </div>
         <Footer />
@@ -90,7 +90,7 @@ const AvailableLessons = () => {
           {/* Page Header */}
           <div className="text-center mb-5">
             <h2 className="display-4 fw-bold text-dark mb-3">
-              {course?.Title || "Danh sách bài học"}
+              {course?.Title || "Lesson List"}
             </h2>
             <p className="lead text-muted">{course?.Description}</p>
 
@@ -101,7 +101,7 @@ const AvailableLessons = () => {
                   <div className="card-body text-center py-3">
                     <BookOpen size={24} className="mb-2" />
                     <h5 className="mb-1">{lessons.length}</h5>
-                    <small>Tổng số bài học</small>
+                    <small>Total Lessons</small>
                   </div>
                 </div>
               </div>
@@ -110,7 +110,7 @@ const AvailableLessons = () => {
                   <div className="card-body text-center py-3">
                     <Users size={24} className="mb-2" />
                     <h5 className="mb-1">1</h5>
-                    <small>Khóa học</small>
+                    <small>Course</small>
                   </div>
                 </div>
               </div>
@@ -128,7 +128,7 @@ const AvailableLessons = () => {
                   <input
                     type="text"
                     className="form-control border-start-0 ps-0"
-                    placeholder="Tìm kiếm bài học theo tiêu đề hoặc nội dung..."
+                    placeholder="Search lessons by title or content..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -151,8 +151,8 @@ const AvailableLessons = () => {
           {searchTerm && (
             <div className="text-center mb-4">
               <p className="text-muted">
-                Found {filteredLessons.length} bài học
-                {searchTerm && ` phù hợp với "${searchTerm}"`}
+                Found {filteredLessons.length} lessons
+                {searchTerm && ` matching "${searchTerm}"`}
               </p>
             </div>
           )}
@@ -162,22 +162,22 @@ const AvailableLessons = () => {
             <div className="text-center py-5">
               <BookOpen className="text-muted mb-4" size={64} />
               <h3 className="h4 text-muted mb-3">
-                {searchTerm ? "Không tìm thấy bài học nào" : "Chưa có bài học nào"}
+                {searchTerm ? "No lessons found" : "No lessons available"}
               </h3>
               <p className="text-muted">
                 {searchTerm
-                  ? `Không có bài học nào phù hợp với từ khóa "${searchTerm}". Hãy thử từ khóa khác.`
-                  : "Bạn chưa có quyền truy cập bài học nào. Hãy mua khóa học để bắt đầu!"}
+                  ? `No lessons match the keyword "${searchTerm}". Try another keyword.`
+                  : "You do not have access to any lessons yet. Please purchase a course to get started!"}
               </p>
               {searchTerm ? (
                 <button
                   className="btn btn-outline-primary mt-3"
                   onClick={clearSearch}
                 >
-                  Xóa tìm kiếm
+                  Clear search
                 </button>
               ) : (
-                <button className="btn btn-primary mt-3">Xem các khóa học</button>
+                <button className="btn btn-primary mt-3">View Courses</button>
               )}
             </div>
           ) : (
@@ -190,7 +190,7 @@ const AvailableLessons = () => {
                       <div className="d-flex align-items-start justify-content-between mb-3">
                         <div className="lesson-number-badge">
                           <span className="badge bg-primary rounded-pill px-3 py-2 fs-6">
-                            Bài học {lessons.findIndex(
+                            Lesson {lessons.findIndex(
                               (l) => l.LessonID === lesson.LessonID
                             ) + 1}
                           </span>
@@ -207,7 +207,7 @@ const AvailableLessons = () => {
                         <div className="d-flex align-items-center mb-2">
                           <FileText size={16} className="text-muted me-2" />
                           <small className="text-muted fw-medium">
-                            Giới thiệu
+                            Introduction
                           </small>
                         </div>
                         <p
@@ -231,9 +231,9 @@ const AvailableLessons = () => {
                             <div className="p-2 bg-light rounded">
                               <Clock size={16} className="text-primary mb-1" />
                               <div className="small text-muted">
-                                Thời lượng dự kiến
+                                Estimated Duration
                               </div>
-                              <div className="fw-semibold">15-30 phút</div>
+                              <div className="fw-semibold">15-30 minutes</div>
                             </div>
                           </div>
                         </div>
@@ -248,7 +248,7 @@ const AvailableLessons = () => {
                           className="btn btn-outline-primary btn-lg fw-semibold d-flex align-items-center justify-content-center gap-2"
                         >
                           <Eye size={18} />
-                          Xem chi tiết
+                          View Details
                         </button>
                       </div>
                     </div>

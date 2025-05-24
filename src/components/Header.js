@@ -73,10 +73,10 @@ export default function Header() {
         return (
           <Nav.Link
             as={Link}
-            to="/courses"
+            to="/enrollments/my-courses"
             className="text-dark fw-medium me-3"
           >
-            Courses
+            My Courses
           </Nav.Link>
         );
     }
@@ -253,7 +253,7 @@ export default function Header() {
                   <i className="fas fa-user me-2"></i>
                   My Profile
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to="/my-courses" className="py-2">
+                <Dropdown.Item as={Link} to="/enrollments/my-courses" className="py-2">
                   <i className="fas fa-graduation-cap me-2"></i>
                   My Courses
                 </Dropdown.Item>

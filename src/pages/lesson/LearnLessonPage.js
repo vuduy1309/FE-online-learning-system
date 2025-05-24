@@ -19,7 +19,7 @@ const LearnLessonPage = () => {
         setLessonData(res.data.data);
       } catch (err) {
         setError(
-          err.response?.data?.message || 'Không thể tải dữ liệu bài học.'
+          err.response?.data?.message || 'Cannot load lesson data.'
         );
       } finally {
         setLoading(false);
@@ -34,9 +34,9 @@ const LearnLessonPage = () => {
       <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
         <div className="text-center">
           <Spinner animation="border" role="status" className="mb-3">
-            <span className="visually-hidden">Đang tải...</span>
+            <span className="visually-hidden">Loading...</span>
           </Spinner>
-          <p className="text-muted">Đang tải bài học...</p>
+          <p className="text-muted">Loading lesson...</p>
         </div>
       </Container>
     );
@@ -65,7 +65,7 @@ const LearnLessonPage = () => {
             <Card.Header className="bg-primary text-white">
               <h5 className="mb-0">
                 <i className="bi bi-list-ul me-2"></i>
-                Nội dung khóa học
+                Course Content
               </h5>
             </Card.Header>
             <Card.Body className="p-0">
@@ -105,7 +105,7 @@ const LearnLessonPage = () => {
               <h1 className="h3 mb-1 text-primary">{lesson.title}</h1>
               <p className="text-muted mb-0">
                 <i className="bi bi-book me-1"></i>
-                Khóa học: {lesson.courseTitle}
+                Course: {lesson.courseTitle}
               </p>
             </Card.Header>
             
@@ -114,7 +114,7 @@ const LearnLessonPage = () => {
               <div className="mb-4">
                 <h4 className="text-secondary border-bottom pb-2 mb-3">
                   <i className="bi bi-info-circle me-2"></i>
-                  Giới thiệu
+                  Introduction
                 </h4>
                 <p className="lead">{lesson.introduction}</p>
               </div>
@@ -123,7 +123,7 @@ const LearnLessonPage = () => {
               <div className="mb-4">
                 <h4 className="text-secondary border-bottom pb-2 mb-3">
                   <i className="bi bi-file-text me-2"></i>
-                  Nội dung
+                  Content
                 </h4>
                 <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: lesson.content }} />
               </div>
@@ -133,7 +133,7 @@ const LearnLessonPage = () => {
                 <div className="mb-4">
                   <h4 className="text-secondary border-bottom pb-2 mb-3">
                     <i className="bi bi-code-slash me-2"></i>
-                    Ví dụ
+                    Example
                   </h4>
                   <Card className="bg-light">
                     <Card.Body>
@@ -150,7 +150,7 @@ const LearnLessonPage = () => {
                 <div className="mb-4">
                   <h4 className="text-secondary border-bottom pb-2 mb-3">
                     <i className="bi bi-folder me-2"></i>
-                    Tài liệu
+                    Materials
                   </h4>
                   <Row>
                     {materials.map((m) => (
@@ -183,7 +183,7 @@ const LearnLessonPage = () => {
                 <div className="mb-4">
                   <h4 className="text-secondary border-bottom pb-2 mb-3">
                     <i className="bi bi-question-circle me-2"></i>
-                    Câu hỏi kiểm tra
+                    Quiz Questions
                   </h4>
                   <Row>
                     {quizzes.map((q) => (
@@ -221,7 +221,7 @@ const LearnLessonPage = () => {
                       className="d-flex align-items-center"
                     >
                       <i className="bi bi-arrow-left me-2"></i>
-                      <span className="text-truncate">Bài trước: {navigation.previous.title}</span>
+                      <span className="text-truncate">Previous: {navigation.previous.title}</span>
                     </Button>
                   ) : (
                     <div></div>
@@ -229,7 +229,7 @@ const LearnLessonPage = () => {
                 </Col>
                 <Col xs="auto" className="text-center">
                   <Badge bg="secondary" className="px-3 py-2">
-                    Bài học {lesson.orderNumber || lessonId}
+                    Lesson {lesson.orderNumber || lessonId}
                   </Badge>
                 </Col>
                 <Col className="text-end">
@@ -240,7 +240,7 @@ const LearnLessonPage = () => {
                       variant="outline-primary"
                       className="d-flex align-items-center justify-content-end"
                     >
-                      <span className="text-truncate">Bài tiếp: {navigation.next.title}</span>
+                      <span className="text-truncate">Next: {navigation.next.title}</span>
                       <i className="bi bi-arrow-right ms-2"></i>
                     </Button>
                   ) : (
