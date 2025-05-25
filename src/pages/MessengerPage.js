@@ -4,20 +4,24 @@ import axios from "../api/axios";
 import { jwtDecode } from "jwt-decode";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import axiosInstance from "../api/axios";
 
-const SOCKET_URL = "http://localhost:8080"; // Đổi lại nếu backend chạy port khác
+const SOCKET_URL = "http://localhost:8080"; // Change if backend runs on a different port
 
 const MessengerPage = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [user, setUser] = useState(null); // Lấy user từ localStorage hoặc context
+  const [user, setUser] = useState(null); // Get user from localStorage or context
+  const [showNewConversation, setShowNewConversation] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // Lấy user từ token trong localStorage
+    // Get user from token in localStorage
     const token = localStorage.getItem("token");
     let userData = null;
     if (token) {
@@ -29,9 +33,8 @@ const MessengerPage = () => {
     }
     console.log("[MessengerPage] user from token:", userData); // DEBUG
     setUser(userData);
-    // Ưu tiên lấy userId từ các trường phổ biến
-    const _userId =
-      userData?.userId || userData?.id || userData?.sub || userData?.UserID;
+    // Use id from token only
+    const _userId = userData?.id;
     if (_userId) {
       fetchChatRooms(_userId);
     }
@@ -48,17 +51,17 @@ const MessengerPage = () => {
       });
       socketRef.current.on("receiveMessage", (msg) => {
         if (msg.chatRoomId === selectedRoom.ChatRoomID) {
-          // Lấy userId từ các trường phổ biến
-          const _userId = user?.userId || user?.id || user?.sub || user?.UserID;
+          // Use id from token only
+          const _userId = user?.id;
           let senderId = msg.senderId ?? msg.SenderID ?? null;
           const isMe = senderId && String(senderId) === String(_userId);
           setMessages((prev) => [
             ...prev,
             {
               ...msg,
-              Content: msg.Content || msg.content, // đồng bộ trường Content
+              Content: msg.Content || msg.content, // sync Content field
               FullName:
-                msg.FullName || (isMe ? user.fullName || "You" : "Ẩn danh"),
+                msg.FullName || (isMe ? user.fullName || "You" : "Anonymous"),
               SenderID: senderId,
               SentAt: msg.sentAt || msg.SentAt || new Date().toISOString(),
               MessageID: msg.MessageID
@@ -78,12 +81,35 @@ const MessengerPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Fetch all users for new conversation (except myself)
+  useEffect(() => {
+    if (!user || !user.id) return;
+    const fetchUsers = async () => {
+      try {
+        const res = await axiosInstance.get("/auth/users");
+        const _userId = user.id;
+        console.log("API Response:", res); // Debug
+        // Handle both cases: array directly or nested in data property
+        const users = Array.isArray(res.data) ? res.data : (res.data.data || []);
+        const filtered = users.filter(
+          (u) => String(u.UserID) !== String(_userId)
+        );
+        console.log("Filtered Users:", filtered); // Debug
+        setAllUsers(filtered);
+      } catch (err) {
+        console.error("Error fetching users:", err); // Debug
+        setAllUsers([]);
+      }
+    };
+    fetchUsers();
+  }, [user?.id]);
+
   const fetchChatRooms = async (userId) => {
     try {
       const res = await axios.get(`/chatrooms/user/${userId}`);
       if (res.data.success) setChatRooms(res.data.data);
     } catch (err) {
-      alert("Không lấy được danh sách phòng chat");
+      alert("Unable to fetch chat rooms");
     }
   };
 
@@ -92,16 +118,16 @@ const MessengerPage = () => {
       const res = await axios.get(`/chatrooms/${chatRoomId}/messages`);
       if (res.data.success) setMessages(res.data.data);
     } catch (err) {
-      alert("Không lấy được lịch sử chat");
+      alert("Unable to fetch message history");
     }
   };
 
   const handleSend = () => {
     if (!newMessage.trim() || !selectedRoom) return;
-    // Ưu tiên lấy userId từ các trường phổ biến
-    const _userId = user?.userId || user?.id || user?.sub || user?.UserID;
+    // Use id from token only
+    const _userId = user?.id;
     if (!_userId) {
-      alert("Không tìm thấy userId trong token!");
+      alert("Cannot find userId in token!");
       return;
     }
     socketRef.current.emit("sendMessage", {
@@ -111,6 +137,27 @@ const MessengerPage = () => {
       imageUrl: null,
     });
     setNewMessage("");
+  };
+
+  const handleCreateConversation = async () => {
+    if (!selectedUser) return;
+    const _userId = user?.id;
+    try {
+      const res = await axios.post(
+        "/chatrooms",
+        { userId: _userId, instructorId: selectedUser.UserID },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      if (res.data.success) {
+        fetchChatRooms(_userId);
+        setShowNewConversation(false);
+        setSelectedUser(null);
+      }
+    } catch (err) {
+      alert("Failed to create new conversation");
+    }
   };
 
   return (
@@ -125,18 +172,129 @@ const MessengerPage = () => {
           overflow: "hidden",
         }}
       >
-        {/* Danh sách phòng chat */}
+        {/* Chat room list */}
         <div
           style={{
             width: 280,
             borderRight: "1px solid #eee",
             background: "#fafafa",
             overflowY: "auto",
+            position: "relative",
           }}
         >
-          <h5 style={{ padding: 16, borderBottom: "1px solid #eee" }}>
-            Chat Rooms
-          </h5>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: 16,
+              borderBottom: "1px solid #eee",
+            }}
+          >
+            <span>
+              {selectedRoom
+                ? (() => {
+                    const _userId = user?.id;
+                    let names = [];
+                    if (
+                      selectedRoom.Members &&
+                      Array.isArray(selectedRoom.Members)
+                    ) {
+                      names = selectedRoom.Members.filter(
+                        (m) => String(m.UserID) !== String(_userId)
+                      ).map((m) => m.FullName);
+                    } else {
+                      if (
+                        selectedRoom.UserID &&
+                        String(selectedRoom.UserID) !== String(_userId)
+                      ) {
+                        names.push(selectedRoom.UserFullName || "User");
+                      }
+                      if (
+                        selectedRoom.InstructorID &&
+                        String(selectedRoom.InstructorID) !== String(_userId)
+                      ) {
+                        names.push(
+                          selectedRoom.InstructorFullName || "Instructor"
+                        );
+                      }
+                    }
+                    return names.length ? names.join(", ") : "Other(s)";
+                  })()
+                : "Chat Rooms"}
+            </span>
+            <button
+              style={{
+                border: "none",
+                background: "#e6f7ff",
+                borderRadius: 4,
+                padding: "2px 8px",
+                fontSize: 16,
+                cursor: "pointer",
+              }}
+              title="New conversation"
+              onClick={() => setShowNewConversation(true)}
+            >
+              +
+            </button>
+          </div>
+          {/* New Conversation Modal */}
+          {showNewConversation && (
+            <div
+              style={{
+                position: "absolute",
+                top: 50,
+                left: 0,
+                right: 0,
+                background: "#fff",
+                zIndex: 10,
+                border: "1px solid #eee",
+                borderRadius: 8,
+                padding: 16,
+              }}
+            >
+              <div style={{ marginBottom: 8, fontWeight: 500 }}>
+                Start a new conversation
+              </div>
+              <select
+                value={selectedUser?.UserID || ""}
+                onChange={(e) => {
+                  const selectedId = Number(e.target.value);
+                  const userObj = allUsers.find((u) => u.UserID === selectedId);
+                  setSelectedUser(userObj || null);
+                }}
+                style={{
+                  width: "100%",
+                  padding: 8,
+                  borderRadius: 4,
+                  border: "1px solid #ccc",
+                  marginBottom: 12,
+                }}
+              >
+                <option value="">Select a user...</option>
+                {allUsers.map((u) => (
+                  <option key={u.UserID} value={u.UserID}>
+                    {u.FullName} ({u.Email})
+                  </option>
+                ))}
+              </select>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleCreateConversation}
+                  disabled={!selectedUser}
+                >
+                  Start
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowNewConversation(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
           {chatRooms.map((room) => (
             <div
               key={room.ChatRoomID}
@@ -151,11 +309,33 @@ const MessengerPage = () => {
                 borderBottom: "1px solid #f0f0f0",
               }}
             >
-              Room #{room.ChatRoomID}
+              {/* Show all other members' names in the room */}
+              {(() => {
+                const _userId = user?.id;
+                let names = [];
+                if (room.Members && Array.isArray(room.Members)) {
+                  names = room.Members.filter(
+                    (m) => String(m.UserID) !== String(_userId)
+                  ).map((m) => m.FullName);
+                } else {
+                  if (room.UserID && String(room.UserID) !== String(_userId)) {
+                    names.push(room.UserFullName || "User");
+                  }
+                  if (
+                    room.InstructorID &&
+                    String(room.InstructorID) !== String(_userId)
+                  ) {
+                    names.push(room.InstructorFullName || "Instructor");
+                  }
+                }
+                return names.length
+                  ? names.join(", ")
+                  : `Room #${room.ChatRoomID}`;
+              })()}
             </div>
           ))}
         </div>
-        {/* Khung chat */}
+        {/* Chat area */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <div
             style={{
@@ -168,10 +348,9 @@ const MessengerPage = () => {
             {selectedRoom ? (
               messages.length ? (
                 messages.map((msg) => {
-                  // Xác định phía hiển thị dựa vào SenderID
+                  // Determine side based on SenderID
                   const senderId = msg.SenderID ?? msg.senderId ?? null;
-                  const _userId =
-                    user?.userId || user?.id || user?.sub || user?.UserID;
+                  const _userId = user?.id;
                   const isMe = senderId && String(senderId) === String(_userId);
                   return (
                     <div
@@ -182,7 +361,7 @@ const MessengerPage = () => {
                       }}
                     >
                       <div style={{ fontWeight: "bold", fontSize: 13 }}>
-                        {msg.FullName || (isMe ? "You" : "Ẩn danh")}
+                        {msg.FullName || (isMe ? "You" : "Anonymous")}
                       </div>
                       <div
                         style={{
@@ -206,14 +385,14 @@ const MessengerPage = () => {
                   );
                 })
               ) : (
-                <div>Chưa có tin nhắn nào.</div>
+                <div>No messages yet.</div>
               )
             ) : (
-              <div>Chọn phòng chat để bắt đầu.</div>
+              <div>Select a chat room to start.</div>
             )}
             <div ref={messagesEndRef} />
           </div>
-          {/* Nhập tin nhắn */}
+          {/* Message input */}
           {selectedRoom && (
             <div
               style={{
@@ -228,7 +407,7 @@ const MessengerPage = () => {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Nhập tin nhắn..."
+                placeholder="Type a message..."
                 style={{
                   flex: 1,
                   marginRight: 8,
@@ -238,7 +417,7 @@ const MessengerPage = () => {
                 }}
               />
               <button className="btn btn-primary" onClick={handleSend}>
-                Gửi
+                Send
               </button>
             </div>
           )}
