@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Nav, Button, Badge, Spinner, Alert } from 'react-bootstrap';
 import axiosInstance from '../../api/axios';
 import Footer from '../../components/Footer';
@@ -7,6 +7,7 @@ import Header from '../../components/Header';
 
 const LearnLessonPage = () => {
   const { lessonId } = useParams();
+  const navigate = useNavigate();
   const [lessonData, setLessonData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -58,6 +59,9 @@ const LearnLessonPage = () => {
     <>
     <Header/>
     <Container fluid className="py-4">
+      <button className="btn btn-secondary mb-3" type="button" onClick={() => navigate(-1)}>
+        &larr; Back
+      </button>
       <Row className="g-4">
         {/* Sidebar Navigation */}
         <Col lg={3}>

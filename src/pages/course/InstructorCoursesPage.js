@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axios";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -14,6 +14,8 @@ const InstructorCourses = () => {
     noLessons: false,
     noMaterials: false,
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMyCourses = async () => {
@@ -119,6 +121,13 @@ const InstructorCourses = () => {
     <>
       <Header />
       <div className="container mt-4">
+        <button
+          className="btn btn-secondary mb-3"
+          type="button"
+          onClick={() => navigate(-1)}
+        >
+          &larr; Back
+        </button>
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>My Courses</h2>
         </div>
@@ -267,15 +276,14 @@ const InstructorCourses = () => {
                         </td>
                         <td>
                           <div className="btn-group">
-
-                              <Link
-                                to={`/courses/${course.CourseID}/lessons`}
-                                className="btn btn-sm btn-outline-primary"
-                                title="View Lessons"
-                              >
-                                <i className="bi bi-collection"></i> View
-                                Lessons
-                              </Link>
+                            <Link
+                              to={`/courses/${course.CourseID}/lessons`}
+                              className="btn btn-sm btn-outline-primary"
+                              title="View Lessons"
+                            >
+                              <i className="bi bi-collection"></i> View
+                              Lessons
+                            </Link>
                           </div>
                         </td>
                       </tr>

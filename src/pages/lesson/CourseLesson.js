@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axios";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 const CourseLessons = () => {
   const { courseId } = useParams();
+  const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,6 +80,14 @@ const CourseLessons = () => {
             </div>
           </div>
         )}
+
+        <button
+          className="btn btn-secondary mb-3"
+          type="button"
+          onClick={() => navigate(-1)}
+        >
+          &larr; Back
+        </button>
 
         <div className="card">
           <div className="card-header bg-light">

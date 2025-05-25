@@ -87,6 +87,10 @@ const AvailableLessons = () => {
       <Header />
       <div className="bg-light min-vh-100">
         <div className="container py-5">
+          <button className="btn btn-secondary mb-3" type="button" onClick={() => navigate(-1)}>
+            &larr; Back
+          </button>
+
           {/* Page Header */}
           <div className="text-center mb-5">
             <h2 className="display-4 fw-bold text-dark mb-3">

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import HomePage from "./pages/HomePage";
@@ -23,7 +23,7 @@ import EnrolledCourses from "./pages/course/EnrolledCourses";
 import AvailableLessons from "./pages/lesson/AvailableLessons";
 import LearnLessonPage from "./pages/lesson/LearnLessonPage";
 import DoQuizPage from "./pages/quiz/DoQuizPage";
-
+import About from "./pages/About";
 
 function App() {
   return (
@@ -39,19 +39,31 @@ function App() {
         <Route path="/cart/view" element={<CartPage />} />
         <Route path="/checkout" element={<ConfirmOrderPage />} />
         <Route path="/confirm-order" element={<ConfirmOrderPage />} />
-        <Route path="/courses/instructorCourses" element={<InstructorCourses />} />
+        <Route
+          path="/courses/instructorCourses"
+          element={<InstructorCourses />}
+        />
         <Route path="/courses/:courseId/lessons" element={<CourseLessons />} />
-        <Route path="/courses/:courseId/lessons/:lessonId" element={<LessonDetails />} />
-        <Route path="/courses/:courseId/lessons/quizzes/:lessonId" element={<QuizDetailPage />} />
+        <Route
+          path="/courses/:courseId/lessons/:lessonId"
+          element={<LessonDetails />}
+        />
+        <Route
+          path="/courses/:courseId/lessons/quizzes/:lessonId"
+          element={<QuizDetailPage />}
+        />
         <Route path="/update-quiz/:quizId" element={<UpdateQuizPage />} />
         <Route path="/lesson/:lessonId/add-quiz" element={<AddQuizPage />} />
         <Route path="/orderList" element={<OrderList />} />
         <Route path="/orderDetails/:orderId" element={<OrderDetails />} />
         <Route path="/enrollments/my-courses" element={<EnrolledCourses />} />
-        <Route path="/availableLessons/:CourseID" element={<AvailableLessons />} />
+        <Route
+          path="/availableLessons/:CourseID"
+          element={<AvailableLessons />}
+        />
         <Route path="/learn/:lessonId" element={<LearnLessonPage />} />
-        <Route path="/quizzes/:quizId" element={<DoQuizPage/>} />
-
+        <Route path="/quizzes/:quizId" element={<DoQuizPage />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </BrowserRouter>
   );

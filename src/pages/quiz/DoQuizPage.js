@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../api/axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 const DoQuizPage = () => {
   const { quizId } = useParams();
+  const navigate = useNavigate();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -17,7 +18,7 @@ const DoQuizPage = () => {
     const fetchQuiz = async () => {
       try {
         setLoading(true);
-        const res = await axiosInstance.get(`/quizzes/${quizId}/view`); // You may need to adjust the endpoint
+        const res = await axiosInstance.get(`/quizzes/${quizId}/view`);
         if (res.data.success) {
           setQuiz(res.data.data);
         } else {
@@ -64,6 +65,9 @@ const DoQuizPage = () => {
     <>
       <Header />
       <div className="container py-4">
+        <button className="btn btn-secondary mb-3" type="button" onClick={() => navigate(-1)}>
+          &larr; Back
+        </button>
         <h2 className="mb-4">{quiz.title}</h2>
         <form onSubmit={handleSubmit}>
           {quiz.questions.map((q, idx) => (

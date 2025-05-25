@@ -8,6 +8,10 @@ import { useNavigate } from "react-router-dom";
 const EnrolledCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 6;
 
   useEffect(() => {
     axiosInstance
@@ -25,6 +29,14 @@ const EnrolledCourses = () => {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    setFilteredCourses(
+      courses.filter((course) =>
+        course.Title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, courses]);
 
   const navigate = useNavigate();
 
@@ -45,6 +57,21 @@ const EnrolledCourses = () => {
   const handleFeedback = (courseId, title) => {
     // Implement feedback functionality
     console.log(`Opening feedback for: ${title}`);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Pagination logic
+  const paginatedCourses = (searchTerm ? filteredCourses : courses).slice(
+    (currentPage - 1) * coursesPerPage,
+    currentPage * coursesPerPage
+  );
+  const totalPages = Math.ceil((searchTerm ? filteredCourses.length : courses.length) / coursesPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (loading) {
@@ -69,31 +96,60 @@ const EnrolledCourses = () => {
       <Header />
       <div className="bg-light min-vh-100">
         <div className="container py-5">
+          <button className="btn btn-secondary mb-3" type="button" onClick={() => navigate(-1)}>
+            &larr; Back
+          </button>
           {/* Page Header */}
           <div className="text-center mb-5">
             <h2 className="display-4 fw-bold text-dark mb-3">
-              Các khóa học đã đăng ký
+              Enrolled Courses
             </h2>
             <p className="lead text-muted">
-              Tiếp tục hành trình học tập và phát triển kỹ năng của bạn
+              Continue your learning journey and develop your skills
             </p>
           </div>
 
+          {/* Search Bar */}
+          <div className="row justify-content-center mb-4">
+            <div className="col-lg-6 col-md-8">
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search courses by title..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+                {searchTerm && (
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={() => setSearchTerm("")}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Courses Display */}
-          {courses.length === 0 ? (
+          {(searchTerm ? filteredCourses : courses).length === 0 ? (
             <div className="text-center py-5">
               <BookOpen className="text-muted mb-4" size={64} />
               <h3 className="h4 text-muted mb-3">
-                Bạn chưa đăng ký khóa học nào
+                {searchTerm ? "No courses found" : "You have not enrolled in any courses"}
               </h3>
               <p className="text-muted">
-                Bạn chưa đăng ký bất kỳ khóa học nào. Khám phá các khóa học có sẵn!
+                {searchTerm
+                  ? `No courses match the keyword "${searchTerm}". Try another keyword.`
+                  : "You have not enrolled in any courses yet. Explore available courses!"}
               </p>
             </div>
           ) : (
             <>
               <div className="row g-4">
-                {courses.map((course) => (
+                {paginatedCourses.map((course) => (
                   <div key={course.CourseID} className="col-lg-4 col-md-6">
                     <div className="card h-100 shadow-sm border-0 overflow-hidden">
                       {/* Course Header */}
@@ -130,7 +186,7 @@ const EnrolledCourses = () => {
                               <User size={20} />
                             </div>
                             <div>
-                              <small className="text-muted">Giảng viên</small>
+                              <small className="text-muted">Instructor</small>
                               <div className="fw-semibold text-dark">{course.Instructor}</div>
                             </div>
                           </div>
@@ -144,7 +200,7 @@ const EnrolledCourses = () => {
                             className="btn btn-primary btn-lg fw-semibold d-flex align-items-center justify-content-center gap-2"
                           >
                             <Play size={18} />
-                            Học ngay
+                            Study Now
                           </button>
                           
                           {/* Secondary Actions */}
@@ -153,7 +209,7 @@ const EnrolledCourses = () => {
                               <button
                                 onClick={() => handleChatInstructor(course.CourseID)}
                                 className="btn btn-outline-success btn-sm w-100 d-flex align-items-center justify-content-center flex-column"
-                                title="Chat với giảng viên"
+                                title="Chat with instructor"
                               >
                                 <MessageCircle size={16} />
                                 <small className="d-none d-sm-block mt-1">Chat</small>
@@ -164,10 +220,10 @@ const EnrolledCourses = () => {
                               <button
                                 onClick={() => handleComplaint(course.CourseID, course.Title)}
                                 className="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center flex-column"
-                                title="Gửi khiếu nại"
+                                title="Send complaint"
                               >
                                 <AlertTriangle size={16} />
-                                <small className="d-none d-sm-block mt-1">Khiếu nại</small>
+                                <small className="d-none d-sm-block mt-1">Complaint</small>
                               </button>
                             </div>
                             
@@ -175,10 +231,10 @@ const EnrolledCourses = () => {
                               <button
                                 onClick={() => handleFeedback(course.CourseID, course.Title)}
                                 className="btn btn-outline-warning btn-sm w-100 d-flex align-items-center justify-content-center flex-column"
-                                title="Góp ý"
+                                title="Feedback"
                               >
                                 <MessageSquare size={16} />
-                                <small className="d-none d-sm-block mt-1">Góp ý</small>
+                                <small className="d-none d-sm-block mt-1">Feedback</small>
                               </button>
                             </div>
                           </div>
@@ -188,14 +244,18 @@ const EnrolledCourses = () => {
                   </div>
                 ))}
               </div>
-
-              {/* Course Count Info */}
-              <div className="text-center mt-5">
-                <div className="badge bg-primary fs-6 p-3 rounded-pill">
-                  <BookOpen size={16} className="me-2" />
-                  Tổng cộng {courses.length} khóa học đã đăng ký
-                </div>
-              </div>
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <nav className="mt-4 d-flex justify-content-center">
+                  <ul className="pagination">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <li key={page} className={`page-item${page === currentPage ? " active" : ""}`}>
+                        <button className="page-link" onClick={() => handlePageChange(page)}>{page}</button>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
             </>
           )}
         </div>
