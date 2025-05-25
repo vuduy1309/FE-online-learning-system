@@ -26,6 +26,7 @@ import DoQuizPage from "./pages/quiz/DoQuizPage";
 import About from "./pages/About";
 import ViewQuizHistoryPage from "./pages/quiz/ViewQuizHistoryPage";
 import ViewQuizStatsPage from "./components/quiz/QuizStats";
+import MessengerPage from "./pages/MessengerPage";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
           path="/quizzes/:quizId/history"
           element={<ViewQuizHistoryPage />}
         />
+        <Route path="/messenger" element={<MessengerPage />} />
       </Routes>
     </BrowserRouter>
   );

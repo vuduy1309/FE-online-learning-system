@@ -1,15 +1,17 @@
 import { Container, Navbar, Nav, Button, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { FaBell, FaHeart, FaShoppingCart } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
+import axios from "../api/axios";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const [show, setShow] = useState(false);
   const { cartItemsCount } = useCart();
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
 
   const iconStyle = {
@@ -81,6 +83,24 @@ export default function Header() {
         );
     }
   };
+
+  useEffect(() => {
+    async function fetchUnread() {
+      if (user) {
+        try {
+          // Giả sử backend có endpoint trả về tổng số tin nhắn chưa đọc
+          const userId = user.userId || user.id || user.sub || user.UserID;
+          const res = await axios.get(
+            `/chatrooms/user/${userId}/unread-messages`
+          );
+          setUnreadCount(res.data.count || 0);
+        } catch {
+          setUnreadCount(0);
+        }
+      }
+    }
+    fetchUnread();
+  }, [user]);
 
   return (
     <Navbar bg="white" className="shadow-sm border-bottom">
@@ -182,27 +202,27 @@ export default function Header() {
               ></span>
             </div>
 
-            <div className="position-relative" title="Messages">
+            <Link to="/messenger" className="position-relative" title="Messages">
               <FaMessage
                 style={iconStyle}
-                onMouseOver={(e) =>
-                  (e.target.style.color = iconHoverStyle.color)
-                }
+                onMouseOver={(e) => (e.target.style.color = iconHoverStyle.color)}
                 onMouseOut={(e) => (e.target.style.color = iconStyle.color)}
               />
-              <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"
-                style={{
-                  fontSize: "10px",
-                  padding: "3px 6px",
-                  minWidth: "18px",
-                  height: "18px",
-                  lineHeight: "12px",
-                }}
-              >
-                3
-              </span>
-            </div>
+              {unreadCount > 0 && (
+                <span
+                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"
+                  style={{
+                    fontSize: "10px",
+                    padding: "3px 6px",
+                    minWidth: "18px",
+                    height: "18px",
+                    lineHeight: "12px",
+                  }}
+                >
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
+            </Link>
           </div>
 
           {user ? (
