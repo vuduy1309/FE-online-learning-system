@@ -24,6 +24,8 @@ import AvailableLessons from "./pages/lesson/AvailableLessons";
 import LearnLessonPage from "./pages/lesson/LearnLessonPage";
 import DoQuizPage from "./pages/quiz/DoQuizPage";
 import About from "./pages/About";
+import ViewQuizHistoryPage from "./pages/quiz/ViewQuizHistoryPage";
+import ViewQuizStatsPage from "./components/quiz/QuizStats";
 
 function App() {
   return (
@@ -64,6 +66,10 @@ function App() {
         <Route path="/learn/:lessonId" element={<LearnLessonPage />} />
         <Route path="/quizzes/:quizId" element={<DoQuizPage />} />
         <Route path="/about" element={<About />} />
+        <Route
+          path="/quizzes/:quizId/history"
+          element={<ViewQuizHistoryPage />}
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -58,7 +58,21 @@ const DoQuizPage = () => {
   };
 
   if (loading) return <p>Loading quiz...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
+  if (error) return (
+    <>
+      <Header />
+      <div className="container py-4">
+        <div className="alert alert-warning text-center">
+          <h4 className="mb-3">Quiz is not available</h4>
+          <p>This quiz does not have any questions yet. Please contact your instructor for support.</p>
+        </div>
+        <div className="text-center">
+          <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>&larr; Back</button>
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
   if (!quiz) return null;
 
   return (

@@ -93,95 +93,95 @@ const UpdateQuizPage = () => {
 
   return (
     <>
-    <Header/>
-    
-    <div className="container mt-4">
-      <h2 className="mb-4">Update Quiz</h2>
+      <Header />
 
-      <div className="mb-3">
-        <label className="form-label fw-bold">Quiz Title</label>
-        <input
-          className="form-control"
-          value={quiz.Title}
-          onChange={handleTitleChange}
-        />
-      </div>
+      <div className="container mt-4">
+        <h2 className="mb-4">Update Quiz</h2>
 
-      {quiz.Questions.map((q, qIndex) => (
-        <div key={qIndex} className="card mb-4">
-          <div className="card-body">
-            <h5 className="card-title">Question {qIndex + 1}</h5>
+        <div className="mb-3">
+          <label className="form-label fw-bold">Quiz Title</label>
+          <input
+            className="form-control"
+            value={quiz.Title}
+            onChange={handleTitleChange}
+          />
+        </div>
 
-            <div className="mb-3">
-              <label className="form-label">Content</label>
-              <input
-                className="form-control"
-                value={q.Content}
-                onChange={(e) =>
-                  handleQuestionChange(qIndex, "Content", e.target.value)
-                }
-              />
-            </div>
+        {quiz.Questions.map((q, qIndex) => (
+          <div key={qIndex} className="card mb-4">
+            <div className="card-body">
+              <h5 className="card-title">Question {qIndex + 1}</h5>
 
-            <div className="mb-3">
-              <label className="form-label">Image URL (optional)</label>
-              <input
-                className="form-control"
-                value={q.ImageURL || ""}
-                onChange={(e) =>
-                  handleQuestionChange(qIndex, "ImageURL", e.target.value)
-                }
-              />
-            </div>
+              <div className="mb-3">
+                <label className="form-label">Content</label>
+                <input
+                  className="form-control"
+                  value={q.Content}
+                  onChange={(e) =>
+                    handleQuestionChange(qIndex, "Content", e.target.value)
+                  }
+                />
+              </div>
 
-            <div className="ms-3">
-              {q.AnswerOptions.map((opt, oIndex) => (
-                <div key={oIndex} className="mb-2 d-flex align-items-center">
-                  <input
-                    className="form-control me-2"
-                    value={opt.Content}
-                    placeholder={`Option ${oIndex + 1}`}
-                    onChange={(e) =>
-                      handleOptionChange(
-                        qIndex,
-                        oIndex,
-                        "Content",
-                        e.target.value
-                      )
-                    }
-                  />
-                  <div className="form-check">
+              <div className="mb-3">
+                <label className="form-label">Image URL (optional)</label>
+                <input
+                  className="form-control"
+                  value={q.ImageURL || ""}
+                  onChange={(e) =>
+                    handleQuestionChange(qIndex, "ImageURL", e.target.value)
+                  }
+                />
+              </div>
+
+              <div className="ms-3">
+                {q.AnswerOptions.map((opt, oIndex) => (
+                  <div key={oIndex} className="mb-2 d-flex align-items-center">
                     <input
-                      type="checkbox"
-                      className="form-check-input"
-                      checked={opt.IsCorrect}
+                      className="form-control me-2"
+                      value={opt.Content}
+                      placeholder={`Option ${oIndex + 1}`}
                       onChange={(e) =>
                         handleOptionChange(
                           qIndex,
                           oIndex,
-                          "IsCorrect",
-                          e.target.checked
+                          "Content",
+                          e.target.value
                         )
                       }
                     />
-                    <label className="form-check-label">Correct</label>
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={opt.IsCorrect}
+                        onChange={(e) =>
+                          handleOptionChange(
+                            qIndex,
+                            oIndex,
+                            "IsCorrect",
+                            e.target.checked
+                          )
+                        }
+                      />
+                      <label className="form-check-label">Correct</label>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
 
-      <button onClick={addQuestion} className="btn btn-success me-2">
-        Add Question
-      </button>
+        <button onClick={addQuestion} className="btn btn-success me-2">
+          Add Question
+        </button>
 
-      <button onClick={handleSubmit} className="btn btn-primary">
-        Save Changes
-      </button>
-    </div>
-    <Footer/>
+        <button onClick={handleSubmit} className="btn btn-primary">
+          Save Changes
+        </button>
+      </div>
+      <Footer />
     </>
   );
 };
