@@ -26,29 +26,24 @@ export default function UpdateCoursePage() {
   const [instructors, setInstructors] = useState([]);
   const [currentInstructorID, setCurrentInstructorID] = useState("");
 
-  // Lấy base URL từ axios instance hoặc environment variable
   const API_BASE_URL =
     axiosInstance.defaults.baseURL ||
     process.env.REACT_APP_API_URL ||
-    "http://localhost:5000";
+    "http://localhost:8080";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Load course data
         const courseRes = await axiosInstance.get(`/courses/getCourseById/${id}`);
         setForm(courseRes.data);
         
-        // If there's an existing image, set the preview
         if (courseRes.data.ImageURL) {
           setImagePreview(`${API_BASE_URL}${courseRes.data.ImageURL}`);
         }
         
-        // Load instructors
         const instructorsRes = await axiosInstance.get("/courses/instructors");
         setInstructors(instructorsRes.data);
         
-        // Get current instructor for this course
         const courseDetailsRes = await axiosInstance.get(`/courses/${id}`);
         if (courseDetailsRes.data) {
           const instructorName = courseDetailsRes.data.InstructorName;
@@ -82,13 +77,11 @@ export default function UpdateCoursePage() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Kiểm tra loại file
       if (!file.type.startsWith("image/")) {
         setError("Please select a valid image file");
         return;
       }
 
-      // Kiểm tra kích thước file (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError("Image size should not exceed 5MB");
         return;
@@ -107,8 +100,6 @@ export default function UpdateCoursePage() {
 
   const removeImage = () => {
     setImageFile(null);
-    // If we're removing a newly selected image but had an original image,
-    // revert to the original
     if (form.ImageURL && !imageFile) {
       setImagePreview(`${API_BASE_URL}${form.ImageURL}`);
     } else {
@@ -144,7 +135,6 @@ export default function UpdateCoursePage() {
         formData.append("image", imageFile);
       }
 
-      // Debug: Log form data
       console.log("Submitting form data:");
       for (let [key, value] of formData.entries()) {
         console.log(key, value);

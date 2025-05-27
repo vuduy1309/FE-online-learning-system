@@ -28,7 +28,6 @@ export default function ListForManager() {
   const [showModal, setShowModal] = useState(false);
   const [selectedCourseTitle, setSelectedCourseTitle] = useState("");
   
-  // Filter states
   const [searchTitle, setSearchTitle] = useState("");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [selectedInstructors, setSelectedInstructors] = useState([]);
@@ -43,7 +42,6 @@ export default function ListForManager() {
       setCourses(res.data);
       setFilteredCourses(res.data);
       
-      // Extract unique instructors from courses
       const uniqueInstructors = [...new Set(
         res.data
           .filter(course => course.InstructorName)
@@ -73,7 +71,6 @@ export default function ListForManager() {
     fetchCourses();
   }, []);
 
-  // Apply filters whenever filter criteria change
   useEffect(() => {
     applyFilters();
   }, [searchTitle, priceRange, selectedInstructors, ratingFilter, courses]);
@@ -82,7 +79,6 @@ export default function ListForManager() {
     let filtered = [...courses];
     let activeFilterCount = 0;
 
-    // Filter by title search
     if (searchTitle.trim()) {
       filtered = filtered.filter(course => 
         course.Title.toLowerCase().includes(searchTitle.toLowerCase())
@@ -90,7 +86,6 @@ export default function ListForManager() {
       activeFilterCount++;
     }
 
-    // Filter by price range
     if (priceRange.min !== "") {
       filtered = filtered.filter(course => parseFloat(course.Price) >= parseFloat(priceRange.min));
       activeFilterCount++;
@@ -101,7 +96,6 @@ export default function ListForManager() {
       activeFilterCount++;
     }
 
-    // Filter by selected instructors
     if (selectedInstructors.length > 0) {
       filtered = filtered.filter(course => 
         selectedInstructors.includes(course.InstructorName)
@@ -109,7 +103,6 @@ export default function ListForManager() {
       activeFilterCount++;
     }
 
-    // Filter by rating
     if (ratingFilter) {
       const minRating = parseFloat(ratingFilter);
       filtered = filtered.filter(course => 

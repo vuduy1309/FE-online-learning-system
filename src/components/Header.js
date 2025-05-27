@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
-import { FaBell, FaHeart, FaShoppingCart } from "react-icons/fa";
+import { FaBell, FaShoppingCart } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
-import axios from "../api/axios";
+import axiosInstance from "../api/axios";
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -61,16 +61,6 @@ export default function Header() {
             </Nav.Link>
           </>
         );
-      case 5:
-        return (
-          <Nav.Link
-            as={Link}
-            to="/complaints/list"
-            className="text-dark fw-medium me-3"
-          >
-            View List Khiếu Nại
-          </Nav.Link>
-        );
       default:
         return (
           <Nav.Link
@@ -88,12 +78,9 @@ export default function Header() {
     async function fetchUnread() {
       if (user) {
         try {
-          // Giả sử backend có endpoint trả về tổng số tin nhắn chưa đọc
           const userId = user.userId || user.id || user.sub || user.UserID;
-          const res = await axios.get(
-            `/chatrooms/user/${userId}/unread-messages`
-          );
-          setUnreadCount(res.data.count || 0);
+          const res = await axiosInstance.get(`/chatrooms/unread-total`);
+          setUnreadCount(res.data.totalUnread || 0);
         } catch {
           setUnreadCount(0);
         }
@@ -134,8 +121,12 @@ export default function Header() {
           {renderRoleBasedNav()}
           <Nav.Link
             as={Link}
-            to="/support"
+            to="#"
             className="text-dark fw-medium d-none  d-lg-block"
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Coming soon!");
+            }}
           >
             Support
           </Nav.Link>
@@ -143,20 +134,6 @@ export default function Header() {
 
         <Nav className=" d-flex align-items-center">
           <div className="d-flex align-items-center gap-3 me-3">
-            <Link
-              to="/wishlist"
-              className="text-decoration-none position-relative"
-              title="Wishlist"
-            >
-              <FaHeart
-                style={iconStyle}
-                onMouseOver={(e) =>
-                  (e.target.style.color = iconHoverStyle.color)
-                }
-                onMouseOut={(e) => (e.target.style.color = iconStyle.color)}
-              />
-            </Link>
-
             <Link
               to="/cart/view"
               className="text-decoration-none position-relative"
@@ -188,6 +165,10 @@ export default function Header() {
             <div className="position-relative" title="Notifications">
               <FaBell
                 style={iconStyle}
+                onClick={(e) => {
+                  e.preventDefault();
+                  alert("Coming soon!");
+                }}
                 onMouseOver={(e) =>
                   (e.target.style.color = iconHoverStyle.color)
                 }
@@ -202,10 +183,16 @@ export default function Header() {
               ></span>
             </div>
 
-            <Link to="/messenger" className="position-relative" title="Messages">
+            <Link
+              to="/messenger"
+              className="position-relative"
+              title="Messages"
+            >
               <FaMessage
                 style={iconStyle}
-                onMouseOver={(e) => (e.target.style.color = iconHoverStyle.color)}
+                onMouseOver={(e) =>
+                  (e.target.style.color = iconHoverStyle.color)
+                }
                 onMouseOut={(e) => (e.target.style.color = iconStyle.color)}
               />
               {unreadCount > 0 && (
@@ -273,7 +260,11 @@ export default function Header() {
                   <i className="fas fa-user me-2"></i>
                   My Profile
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to="/enrollments/my-courses" className="py-2">
+                <Dropdown.Item
+                  as={Link}
+                  to="/enrollments/my-courses"
+                  className="py-2"
+                >
                   <i className="fas fa-graduation-cap me-2"></i>
                   My Courses
                 </Dropdown.Item>
@@ -282,7 +273,12 @@ export default function Header() {
                   Settings
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item onClick={logout} as={Link} to="/" className="py-2 text-danger">
+                <Dropdown.Item
+                  onClick={logout}
+                  as={Link}
+                  to="/"
+                  className="py-2 text-danger"
+                >
                   <i className="fas fa-sign-out-alt me-2"></i>
                   Logout
                 </Dropdown.Item>

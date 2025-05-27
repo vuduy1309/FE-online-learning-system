@@ -58,7 +58,6 @@ export default function CourseDetailPage() {
         }
       );
 
-      // Redirect to confirmation page with the temporary cart ID
       if (response.data && response.data.cartId) {
         navigate(`/confirm-order?buyNow=true&cartId=${response.data.cartId}`);
       } else {
@@ -117,8 +116,6 @@ export default function CourseDetailPage() {
           <>
             <Row>
               <Col lg={8}>
-                {/* Course Information */}
-                {/* Course Header */}
                 <Card className="mb-4 shadow-sm">
                   <Card.Body>
                     <Row className="align-items-center">

@@ -482,13 +482,18 @@ const LessonDetails = () => {
             <h4 className="mb-0">
               <i className="bi bi-question-circle me-2"></i>Quizzes &
               Assessments
-            </h4>
-            <div>
+            </h4>            <div>
               <Link
                 to={`/lesson/${lessonId}/add-quiz`}
                 className="btn btn-sm btn-light me-2"
               >
                 <i className="bi bi-plus-circle me-1"></i>Add Quiz
+              </Link>
+              <Link
+                to={`/lesson/${lessonId}/quiz-attempts`}
+                className="btn btn-sm btn-light"
+              >
+                <i className="bi bi-people me-1"></i>View Students Attempted
               </Link>
             </div>
           </div>

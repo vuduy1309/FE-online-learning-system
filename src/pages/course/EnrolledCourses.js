@@ -4,14 +4,16 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BookOpen, MessageCircle, AlertTriangle, MessageSquare, Play, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import FeedbackModal from "../../components/feedback/FeedbackModal";
 
 const EnrolledCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredCourses, setFilteredCourses] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredCourses, setFilteredCourses] = useState([]);  const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 6;
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   useEffect(() => {
     axiosInstance
@@ -45,18 +47,18 @@ const EnrolledCourses = () => {
   };
 
   const handleComplaint = (courseId, title) => {
-    // Implement complaint functionality
-    console.log(`Filing complaint for: ${title}`);
+    navigate(`/complaint/${courseId}`);
   };
 
   const handleChatInstructor = (courseId) => {
-    // Implement chat functionality
-    console.log(`Opening chat for course: ${courseId}`);
+    navigate(`/messenger`);
+  };
+  const handleFeedback = (courseId, title) => {
+    setSelectedCourse({ id: courseId, title });
+    setShowFeedbackModal(true);
   };
 
-  const handleFeedback = (courseId, title) => {
-    // Implement feedback functionality
-    console.log(`Opening feedback for: ${title}`);
+  const handleFeedbackSuccess = () => {
   };
 
   const handleSearchChange = (e) => {
@@ -266,8 +268,7 @@ const EnrolledCourses = () => {
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" 
         rel="stylesheet"
       />
-      
-      {/* Custom Styles */}
+        {/* Custom Styles */}
       <style jsx>{`
         .card {
           transition: all 0.3s ease;
@@ -296,6 +297,18 @@ const EnrolledCourses = () => {
       `}</style>
       
       <Footer />
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        show={showFeedbackModal}
+        onHide={() => {
+          setShowFeedbackModal(false);
+          setSelectedCourse(null);
+        }}
+        courseId={selectedCourse?.id}
+        courseTitle={selectedCourse?.title}
+        onSuccess={handleFeedbackSuccess}
+      />
     </>
   );
 };

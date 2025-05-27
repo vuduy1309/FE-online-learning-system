@@ -19,14 +19,14 @@ import OrderDetails from "./pages/order/OrderDetailsPage";
 import AddQuizPage from "./pages/quiz/AddQuizPage";
 import QuizDetailPage from "./pages/quiz/QuizDetailPage";
 import OrderList from "./pages/order/OderList";
+import QuizAttemptList from "./pages/quiz/QuizAttemptList";
 import EnrolledCourses from "./pages/course/EnrolledCourses";
 import AvailableLessons from "./pages/lesson/AvailableLessons";
 import LearnLessonPage from "./pages/lesson/LearnLessonPage";
 import DoQuizPage from "./pages/quiz/DoQuizPage";
 import About from "./pages/About";
 import ViewQuizHistoryPage from "./pages/quiz/ViewQuizHistoryPage";
-import ViewQuizStatsPage from "./components/quiz/QuizStats";
-import MessengerPage from "./pages/MessengerPage";
+import MessengerPage from "./pages/chat/MessengerPage";
 
 function App() {
   return (
@@ -72,6 +72,10 @@ function App() {
           element={<ViewQuizHistoryPage />}
         />
         <Route path="/messenger" element={<MessengerPage />} />
+        <Route
+          path="/lesson/:lessonId/quiz-attempts"
+          element={<QuizAttemptList />}
+        />
       </Routes>
     </BrowserRouter>
   );

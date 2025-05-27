@@ -42,11 +42,16 @@ export default function CartPage() {
     fetchCart();
   }, []);
 
-  const handleRemove = async (cartItemId) => {
+  const handleRemove = async (courseId) => {
+    // Đổi tham số từ cartItemId thành courseId
     try {
-      await axiosInstance.delete(`/cart/item/${cartItemId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      await axiosInstance.post(
+        `/cart/remove`,
+        { courseId }, // Thêm courseId vào request body
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       alert("Item removed successfully");
       fetchCart();
       fetchCartCount();
@@ -132,7 +137,12 @@ export default function CartPage() {
                                 />
                                 <div>
                                   <h6 className="mb-1 fw-semibold">
-                                    {item.Title}
+                                    <Link
+                                      to={`/courses/${item.CourseID}`}
+                                      className="text-decoration-none fw-bold"
+                                    >
+                                      {item.Title}
+                                    </Link>
                                   </h6>
                                   <small className="text-muted">Course</small>
                                 </div>
@@ -155,7 +165,7 @@ export default function CartPage() {
                               <Button
                                 variant="outline-danger"
                                 size="sm"
-                                onClick={() => handleRemove(item.CartItemID)}
+                                onClick={() => handleRemove(item.CourseID)} // Đổi từ CartItemID thành CourseID
                                 className="btn-sm"
                               >
                                 <i className="fas fa-trash me-1"></i>

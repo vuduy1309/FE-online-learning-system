@@ -6,7 +6,6 @@ export default function Footer() {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle newsletter subscription
     alert("Thank you for subscribing! We will send new course updates to " + email);
     setEmail("");
   };

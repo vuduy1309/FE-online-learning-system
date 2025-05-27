@@ -43,14 +43,12 @@ const InstructorCourses = () => {
   const applyFilters = () => {
     let filtered = [...courses];
 
-    // Search by title
     if (searchTitle) {
       filtered = filtered.filter((course) =>
         course.Title.toLowerCase().includes(searchTitle.toLowerCase())
       );
     }
 
-    // Filter by rating
     if (filterOptions.rating) {
       switch (filterOptions.rating) {
         case "highest":
@@ -64,7 +62,6 @@ const InstructorCourses = () => {
       }
     }
 
-    // Filter by enrollment count
     if (filterOptions.enrollment) {
       switch (filterOptions.enrollment) {
         case "highest":
@@ -82,12 +79,10 @@ const InstructorCourses = () => {
       }
     }
 
-    // Filter courses without lessons
     if (filterOptions.noLessons) {
       filtered = filtered.filter((course) => course.LessonCount === 0);
     }
 
-    // Filter courses without materials
     if (filterOptions.noMaterials) {
       filtered = filtered.filter((course) => course.MaterialCount === 0);
     }
@@ -234,7 +229,7 @@ const InstructorCourses = () => {
                       <tr key={course.CourseID}>
                         <td>
                           <Link
-                            to={`/instructor/courses/${course.CourseID}`}
+                            to={`/courses/${course.CourseID}/lessons`}
                             className="text-decoration-none fw-bold"
                           >
                             {course.Title}
