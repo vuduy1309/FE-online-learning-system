@@ -27,7 +27,10 @@ import DoQuizPage from "./pages/quiz/DoQuizPage";
 import About from "./pages/About";
 import ViewQuizHistoryPage from "./pages/quiz/ViewQuizHistoryPage";
 import MessengerPage from "./pages/chat/MessengerPage";
-
+import PaymentSuccessPage from "./pages/order/PaymentSuccessPage";
+import PaymentFailedPage from "./pages/order/PaymentFailedPage";
+import OrderHistoryPage from "./pages/order/OrderHistoryPage";
+import ChatbotBox from "./components/ChatBotBox";
 function App() {
   return (
     <BrowserRouter>
@@ -76,7 +79,11 @@ function App() {
           path="/lesson/:lessonId/quiz-attempts"
           element={<QuizAttemptList />}
         />
+        <Route path="/payment-failed" element={<PaymentFailedPage />} />
+        <Route path="/payment-success" element={<PaymentSuccessPage />} />
+        <Route path="/order-history" element={<OrderHistoryPage />} />
       </Routes>
+      <ChatbotBox />
     </BrowserRouter>
   );
 }

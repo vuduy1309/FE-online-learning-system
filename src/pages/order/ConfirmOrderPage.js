@@ -8,7 +8,7 @@ import {
   Form,
   Row,
   Col,
-  Card
+  Card,
 } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Image from "../../components/image/Image";
@@ -52,9 +52,35 @@ export default function ConfirmOrderPage() {
   useEffect(() => {
     fetchCart();
   }, [location.search]);
-
   const handleConfirm = async () => {
     try {
+      if (paymentMethod === "VNPay") {
+        const res = await axiosInstance.post(
+          "/payment/vnpay/create-qr",
+          { cartId },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        await axiosInstance.post(
+          "/orders/confirm",
+          { paymentMethod, cartId },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log("VNPay response:", res.data);
+        if (res.data && typeof res.data === "string") {
+          window.location.href = res.data;
+          return;
+        }
+
+        return;
+      }
       await axiosInstance.post(
         "/orders/confirm",
         { paymentMethod, cartId },
@@ -113,23 +139,37 @@ export default function ConfirmOrderPage() {
                       <Table className="mb-0">
                         <tbody>
                           {cartItems.map((item, index) => (
-                            <tr key={item.CartItemID} className={index !== cartItems.length - 1 ? 'border-bottom' : ''}>
+                            <tr
+                              key={item.CartItemID}
+                              className={
+                                index !== cartItems.length - 1
+                                  ? "border-bottom"
+                                  : ""
+                              }
+                            >
                               <td className="py-3 ps-3" width="15%">
                                 <Image
-                                  src={item.ImageURL || "/api/placeholder/80/80"}
+                                  src={
+                                    item.ImageURL || "/api/placeholder/80/80"
+                                  }
                                   alt={item.Title}
                                   width={80}
                                   height={80}
                                   className="rounded"
-                                  style={{ objectFit: 'cover' }}
+                                  style={{ objectFit: "cover" }}
                                 />
                               </td>
                               <td className="py-3" width="55%">
-                                <h6 className="mb-1 fw-semibold">{item.Title}</h6>
+                                <h6 className="mb-1 fw-semibold">
+                                  {item.Title}
+                                </h6>
                                 {item.Description && (
                                   <p className="text-muted mb-0 small">
                                     {item.Description.length > 120
-                                      ? `${item.Description.substring(0, 120)}...`
+                                      ? `${item.Description.substring(
+                                          0,
+                                          120
+                                        )}...`
                                       : item.Description}
                                   </p>
                                 )}
@@ -170,7 +210,9 @@ export default function ConfirmOrderPage() {
                                 name="paymentMethod"
                                 value={option.value}
                                 checked={paymentMethod === option.value}
-                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                onChange={(e) =>
+                                  setPaymentMethod(e.target.value)
+                                }
                                 label={
                                   <span className="d-flex align-items-center">
                                     <span className="me-2">{option.icon}</span>
@@ -210,7 +252,7 @@ export default function ConfirmOrderPage() {
                             ${parseFloat(totalPrice).toFixed(2)}
                           </strong>
                         </div>
-                        
+
                         <div className="d-grid gap-2">
                           <Button
                             variant="primary"
