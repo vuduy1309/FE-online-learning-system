@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+# Online Learning System - Frontend (ReactJS)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the frontend of an Online Learning System built with ReactJS and React Bootstrap. It allows students to explore and enroll in courses, track learning progress, take quizzes, chat in real time, and interact with instructors. It also includes admin and course manager panels, order/payment systems (including VNPAY), a blog, feedback, complaint handling, and an integrated AI assistant powered by Google Gemini.
 
-## Available Scripts
+Live site: https://duyhvhe176251.xyz
 
-In the project directory, you can run:
+## Key Features
 
-### `npm start`
+### Student
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Register, login, and view profile
+- Browse and search courses by category, title
+- View course details, pricing, instructor info, feedback
+- Add to cart, use "Buy Now", confirm orders
+- Select payment method (supports VNPAY)
+- Track enrolled course progress
+- Access lessons, view materials (PDF, links), take quizzes
+- Chat in real time with instructors or support
+- Submit feedback and complaints
+- Comment on blog posts
+- Use AI assistant powered by Gemini for learning support
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Instructor
 
-### `npm test`
+- Manage own courses, lessons, quizzes, and materials
+- View enrollments and student feedback
+- Reply to student messages and complaints
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Course Manager
 
-### `npm run build`
+- Add/edit/delete courses
+- Assign instructors
+- Review course content, stats, and feedback
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Admin
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Full control over users, courses, instructors, feedback, complaints
+- Manage blog posts and comments
+- View system-wide statistics and activity logs
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Technologies Used
 
-### `npm run eject`
+- ReactJS  
+- React Router  
+- React Bootstrap  
+- Axios  
+- Socket.IO-client  
+- Google Gemini API  
+- VNPAY payment integration  
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+git clone https://github.com/vuduy1309/FE-online-learning-system.git
+cd FE-online-learning-system
+npm install
+npm start
