@@ -2,7 +2,7 @@
 
 This is the frontend of an Online Learning System built with ReactJS and React Bootstrap. It allows students to explore and enroll in courses, track learning progress, take quizzes, chat in real time, and interact with instructors. It also includes admin and course manager panels, order/payment systems (including VNPAY), a blog, feedback, complaint handling, and an integrated AI assistant powered by Google Gemini.
 
-Live site: https://duyhvhe176251.xyz
+Live site: http://duyhvhe176251.xyz
 
 ## Key Features
 
